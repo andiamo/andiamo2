@@ -47,7 +47,6 @@ class PincelAndiamo1 extends Pincel  {
   
   PincelAndiamo1(int indice, String nombre, char[] teclas) {
     super(indice, nombre, teclas);
-    println("iniciando pincel andiamo 1");
     initRibbons();
     quads = new ArrayList<StrokeQuad>();
   }
@@ -69,7 +68,7 @@ class PincelAndiamo1 extends Pincel  {
     ribbonsWidth = random(0.7 * RIBBON_WIDTH, 1.3 * RIBBON_WIDTH);  
   }
     
-  void addPointToRibbon(float x, float y, boolean starting) {
+  void addPointToRibbon(float x, float y, color tinta, float escala, boolean starting) {
     pX = x;
     pY = y;
   
@@ -135,7 +134,7 @@ class PincelAndiamo1 extends Pincel  {
     PVector nor = new PVector(nX, nY, nZ);
     oldVel = newVel;
     float l = dir.mag();  
-    newVel = ribbonsWidth / map(l, 0, 100, 1, NORM_FACTOR + 0.1);
+    newVel = escala * ribbonsWidth / map(l, 0, 100, 1, NORM_FACTOR + 0.1);
     
   //  println(tablet.getPressure());
   //  newVel = 1 + tablet.getPressure() * NORM_FACTOR;
@@ -148,7 +147,11 @@ class PincelAndiamo1 extends Pincel  {
     addControlPoint(lspline, newX, newY, newZ, nor, +newVel);
     addControlPoint(rspline, newX, newY, newZ, nor, -newVel);
   
-    drawRibbonStretch(lspline, rspline);
+    float r = red(tinta);
+    float g = green(tinta);
+    float b = blue(tinta);
+    float a = alpha(tinta);
+    addRibbonStretch(lspline, rspline, r, g, b, a);
   }
    
   boolean addControlPoint(BSpline spline, float newX, float newY, float newZ, PVector nor, float vel) {
@@ -171,7 +174,7 @@ class PincelAndiamo1 extends Pincel  {
   PVector Sid1Point1 = new PVector();
   PVector Sid2Point0 = new PVector();
   PVector Sid2Point1 = new PVector();
-  void drawRibbonStretch(BSpline spline1, BSpline spline2) {  
+  void addRibbonStretch(BSpline spline1, BSpline spline2, float r, float g, float b, float a) {  
     int ti;
     float t;
     float x, y, z;
@@ -193,11 +196,11 @@ class PincelAndiamo1 extends Pincel  {
         spline2.feval(t, Sid2Point1);
         
         StrokeQuad quad = new StrokeQuad(millis());
-        quad.setVertex(0, Sid1Point0.x, Sid1Point0.y, Sid1Point0.z, 0, uTexCoord, 255, 255, 255, 150);
-        quad.setVertex(1, Sid2Point0.x, Sid2Point0.y, Sid2Point0.z, 1, uTexCoord, 255, 255, 255, 150);
+        quad.setVertex(0, Sid1Point0.x, Sid1Point0.y, Sid1Point0.z, 0, uTexCoord, r, g, b, a);
+        quad.setVertex(1, Sid2Point0.x, Sid2Point0.y, Sid2Point0.z, 1, uTexCoord, r, g, b, a);
         updateTexCoordU();
-        quad.setVertex(2, Sid2Point1.x, Sid2Point1.y, Sid2Point1.z, 1, uTexCoord, 255, 255, 255, 150);
-        quad.setVertex(3, Sid1Point1.x, Sid1Point1.y, Sid1Point1.z, 0, uTexCoord, 255, 255, 255, 150);      
+        quad.setVertex(2, Sid2Point1.x, Sid2Point1.y, Sid2Point1.z, 1, uTexCoord, r, g, b, a);
+        quad.setVertex(3, Sid1Point1.x, Sid1Point1.y, Sid1Point1.z, 0, uTexCoord, r, g, b, a);      
         updateTexCoordU();
         addQuad(quad);
       }    
@@ -217,9 +220,8 @@ class PincelAndiamo1 extends Pincel  {
   
   void pintar(Toque[] toques, color tinta, float escala) {    
     if (quads.size() < toques.length) {
-      println("Agregar nuevas posiciones al pincel andiamo 1");
       for (int i = quads.size(); i < toques.length; i++) {         
-        addPointToRibbon(toques[i].x, toques[i].y, i == 0);
+        addPointToRibbon(toques[i].x, toques[i].y, tinta, escala, i == 0);
       }      
     }
     
@@ -227,7 +229,6 @@ class PincelAndiamo1 extends Pincel  {
     noStroke();
     fill(tinta);
     for (StrokeQuad quad: quads) {
-      println("dibujando trazo andiamo 1");
       quad.display(escala);
     }
     endShape();    

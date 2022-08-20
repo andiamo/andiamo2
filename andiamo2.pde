@@ -5,8 +5,15 @@ ArrayList<CapaDibujo> capas;
 LienzoFondo lienzo;
 Estado estado;
 
-void setup() {
-  size(1200, 800, P2D);
+void settings() {
+  if (PANTALLA_COMPLETA) {
+    fullScreen(P2D, PANTALLA_ALTO);
+  } else {
+    size(PANTALLA_ANCHO, PANTALLA_ALTO, P2D);
+  }
+}
+
+void setup() {  
   cargarPinceles();
   cargarColores();
   crearCapas();

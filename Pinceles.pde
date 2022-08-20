@@ -3,10 +3,12 @@
 
 void cargarPinceles() {
   pinceles = new ArrayList<Pincel>();
-  pinceles.add(new PincelLinea(0, "LIN", new char[]{'Q', 'q'}));
-  pinceles.add(new PincelCinta(1, "CIN", new char[]{'W', 'w'}));
-  pinceles.add(new PincelBola(2, "BOL", new char[]{'E', 'e'}));
-  pinceles.add(new PincelAnimado(3, "ANI", new char[]{'R', 'r'}));
+  
+  pinceles.add(new PincelAndiamo1(0, "AND", new char[]{'Q', 'q'}));  
+  pinceles.add(new PincelLinea(1, "LIN", new char[]{'W', 'w'}));
+  pinceles.add(new PincelCinta(2, "CIN", new char[]{'E', 'e'}));
+  pinceles.add(new PincelBola(3, "BOL", new char[]{'R', 'r'}));
+  pinceles.add(new PincelAnimado(4, "ANI", new char[]{'T', 't'}));
 }
 
 boolean distintos(Toque ptoque, Toque toque) {

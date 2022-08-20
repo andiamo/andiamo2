@@ -177,7 +177,6 @@ class PincelAndiamo1 extends Pincel  {
   void addRibbonStretch(BSpline spline1, BSpline spline2, float r, float g, float b, float a) {  
     int ti;
     float t;
-    float x, y, z;
   
     // The initial geometry is generated.
     spline1.feval(0, Sid1Point1);
@@ -225,13 +224,17 @@ class PincelAndiamo1 extends Pincel  {
       }      
     }
     
-    beginShape(QUADS);
-    noStroke();
-    fill(tinta);
-    for (StrokeQuad quad: quads) {
-      quad.display(escala);
+    if (0 < quads.size()) {
+      float alphaScale = alpha(tinta) / 255;
+      beginShape(QUADS);
+      noStroke();
+      fill(tinta);
+      for (int i = 0; i < min(quads.size(), toques.length); i++) {
+        StrokeQuad quad = quads.get(i);
+        quad.display(alphaScale);
+      }
+      endShape(); 
     }
-    endShape();    
   }
 }
 
@@ -325,14 +328,14 @@ class StrokeQuad {
   }
 
   //void draw(PGraphics pg, float ascale) {
-  void display(float scale) {  
+  void display(float alphaScale) {  
     if (visible) {      
       for (int i = 0; i < 4; i++) {        
         if (USE_TEXTURES) {
-          tint(r[i], g[i], b[i], a[i]);
+          tint(r[i], g[i], b[i], a[i] * alphaScale);
           vertex(x[i], y[i], u[i], v[i]);
         } else {
-          fill(r[i], g[i], b[i], a[i]);
+          fill(r[i], g[i], b[i], a[i] * alphaScale);
           vertex(x[i], y[i]);          
         } 
       }      

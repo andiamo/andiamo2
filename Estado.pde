@@ -4,8 +4,6 @@ char[] teclasAumentarTiempoBorrado  = {'+', '='};
 char[] teclasDisminuirTiempoTransicionFondo = {'<', ','};
 char[] teclasAumentarTiempoTransicionFondo  = {'>', '.'};
 
-char[] teclasUnirTrazos = {'~', '`'};
-
 char[] teclasSeleccionUnaCapa = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 char[] teclasSeleccionTodasLasCapas = {'0'};
 
@@ -166,7 +164,7 @@ class Estado {
         mostrarTextoDeEstado = !mostrarTextoDeEstado;
       } else if (key == ' ') {
         repetirTrazos = !repetirTrazos;
-      } else if (listaContieneTecla(teclasUnirTrazos)) {
+      } else if (key == TAB) {
         unirTrazos = !unirTrazos;
         if (!unirTrazos) {
           cerrarTrazo(capas.get(capaSeleccionada), modificador() == SHIFT);

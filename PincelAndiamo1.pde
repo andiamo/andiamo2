@@ -227,7 +227,7 @@ class PincelAndiamo1 extends Pincel  {
       }
     }
     
-    if (0 < quads.size()) {
+    if (0 < quadCount.size()) {
       float alphaScale = alpha(tinta) / 255;
       beginShape(QUADS);
       noStroke();

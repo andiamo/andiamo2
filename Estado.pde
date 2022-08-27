@@ -168,6 +168,9 @@ class Estado {
         repetirTrazos = !repetirTrazos;
       } else if (listaContieneTecla(teclasUnirTrazos)) {
         unirTrazos = !unirTrazos;
+        if (!unirTrazos) {
+          cerrarTrazo(capas.get(capaSeleccionada), modificador() == SHIFT);
+        }
       } else if (listaContieneTecla(teclasSeleccionUnaCapa)) {
         capaSeleccionada = indiceDeTecla(teclasSeleccionUnaCapa);
         capas.get(capaSeleccionada).mostrar();

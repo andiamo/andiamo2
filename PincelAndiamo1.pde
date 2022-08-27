@@ -44,11 +44,13 @@ class PincelAndiamo1 extends Pincel  {
   float pX, pY;
   
   ArrayList<StrokeQuad> quads;
+  ArrayList<Integer> quadCount;
   
   PincelAndiamo1(int indice, String nombre, char[] teclas) {
     super(indice, nombre, teclas);
     initRibbons();
     quads = new ArrayList<StrokeQuad>();
+    quadCount = new ArrayList<Integer>();
   }
   
   Pincel nuevoPincel() {    
@@ -216,12 +218,13 @@ class PincelAndiamo1 extends Pincel  {
   void addQuad(StrokeQuad quad) {
     quads.add(quad);
   }   
-  
+    
   void pintar(Toque[] toques, color tinta, float escala) {    
-    if (quads.size() < toques.length) {
-      for (int i = quads.size(); i < toques.length; i++) {         
-        addPointToRibbon(toques[i].x, toques[i].y, tinta, escala, i == 0);
-      }      
+    if (quadCount.size() < toques.length) {
+      for (int i = quadCount.size(); i < toques.length; i++) {
+        addPointToRibbon(toques[i].x, toques[i].y, tinta, escala, toques[i].primero);
+        quadCount.add(quads.size());
+      }
     }
     
     if (0 < quads.size()) {
@@ -229,7 +232,7 @@ class PincelAndiamo1 extends Pincel  {
       beginShape(QUADS);
       noStroke();
       fill(tinta);
-      for (int i = 0; i < min(quads.size(), toques.length); i++) {
+      for (int i = 0; i < quadCount.get(toques.length - 1); i++) {
         StrokeQuad quad = quads.get(i);
         quad.display(alphaScale);
       }

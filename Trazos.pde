@@ -9,9 +9,11 @@ Toque crearToque(boolean primero) {
 
 void cerrarTrazo(CapaDibujo capa, boolean unico) {  
   if (capa.trazos.size() == MAX_TRAZOS) capa.trazos.remove(0);
-  estado.nuevoTrazo.cerrate(unico);
-  capa.trazos.add(estado.nuevoTrazo);
-  estado.registrandoTrazo = false;
+  if (estado.nuevoTrazo != null) {
+    estado.nuevoTrazo.cerrate(unico);
+    capa.trazos.add(estado.nuevoTrazo);
+    estado.registrandoTrazo = false;    
+  }
 }
 
 class Trazo {

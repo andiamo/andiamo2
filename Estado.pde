@@ -121,18 +121,10 @@ class Estado {
   void mostrar() {
     if (mostrarTextoDeEstado) {
       String texto = "";
-      texto = "C" + (capaSeleccionada + 1);      
-      if (capas.get(capaSeleccionada).opacidad.valor == 0) texto += "?";       
-      if (todasCapasSeleccionadas) texto += "!";
-      texto += ":" + pinceles.get(pincelSeleccionado).nombre;
-      texto += ":f" + tintasFondo.get(tintaFondoSeleccionada).nombre;
-      texto += ":f" + tiempoTransicionFondoSeleccionado;
-      texto += ":p" + tintasPincel.get(tintaPincelSeleccionada).nombre;
-      texto += ":B" + tiempoBorradoSeleccionado;  
-      texto += ":R" + int(repetirTrazos);
-      texto += ":U" + int(unirTrazos);
-      texto += ":O" + nivelOpacidadSeleccionado;
-      texto += ":E" + nivelEscalaSeleccionado;
+      texto = "capa:" + (todasCapasSeleccionadas ? "todas" : (capaSeleccionada + 1));
+      texto += " pincel:" + (pincelSeleccionado + 1);        
+      texto += " loopear:" + (repetirTrazos ? "si" : "no");
+      texto += " unir:" + (unirTrazos ? "si" : "no");
       fill(lienzo.tintaActual.generarColorComplementario());  
       text(texto, 0, 0, width, 20);      
     }

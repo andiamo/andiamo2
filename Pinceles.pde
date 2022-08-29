@@ -9,9 +9,10 @@ void cargarPinceles() {
   pinceles.add(new PincelCinta(2, "Cinta", new char[]{'E', 'e'}));
   pinceles.add(new PincelChispa(3, "Chispa", new char[]{'R', 'r'}));
   pinceles.add(new PincelCirculo(4, "Circulo", new char[]{'T', 't'}));
-  pinceles.add(new PincelCajas(5, "Cajas", new char[]{'T', 't'}));
+  pinceles.add(new PincelCuadrados(5, "Cuadrados", new char[]{'T', 't'}));
   pinceles.add(new PincelYellowTail(6, "YellowTail", new char[]{'Y', 'y'}));
   pinceles.add(new PincelAbanico(7, "Abanico", new char[]{'U', 'u'}));
+  pinceles.add(new PincelRectangulos(8, "Rectangulos", new char[]{'I', 'i'}));
 }
 
 boolean distintos(Toque ptoque, Toque toque) {
@@ -148,16 +149,16 @@ class PincelCirculo extends Pincel  {
   }
 }
 
-class PincelCajas extends Pincel  {
+class PincelCuadrados extends Pincel  {
   float offset;
   
-  PincelCajas(int indice, String nombre, char[] teclas) {
+  PincelCuadrados(int indice, String nombre, char[] teclas) {
     super(indice, nombre, teclas);
     offset = random(10);
   }
   
   Pincel nuevoPincel() {
-    return new PincelCajas(indice, nombre, teclas);
+    return new PincelCuadrados(indice, nombre, teclas);
   }    
   
   void pintar(Toque[] toques, color tinta, float escala) {
@@ -172,12 +173,9 @@ class PincelCajas extends Pincel  {
   }
 }
 
-class PincelAbanico extends Pincel  {
-  float offset;
-  
+class PincelAbanico extends Pincel  {  
   PincelAbanico(int indice, String nombre, char[] teclas) {
     super(indice, nombre, teclas);
-    offset = random(10);
   }
   
   Pincel nuevoPincel() {
@@ -195,9 +193,44 @@ class PincelAbanico extends Pincel  {
         yc = toque.y;
       }
       if (distintos(ptoque, toque) && !toque.primero) {        
-        line(toque.x, toque.y, xc, yc);
+        line(xc, yc, toque.x, toque.y);
       }
       ptoque = toque;
     } 
+  }
+}
+
+class PincelRectangulos extends Pincel  {
+  PincelRectangulos(int indice, String nombre, char[] teclas) {
+    super(indice, nombre, teclas);
+  }
+  
+  Pincel nuevoPincel() {
+    return new PincelRectangulos(indice, nombre, teclas);
+  }
+  
+  void pintar(Toque[] toques, color tinta, float escala) {
+    fill(tinta);
+    noStroke();
+    Toque toque0 = null;
+    for (int i = 0; i < toques.length; i++) {
+      Toque toque = toques[i];
+      if (toque.primero) {
+        toque0 = toque;        
+      }
+      if (toque.ultimo) {
+        float dx = toque.x - toque0.x;
+        float dy = toque.y - toque0.y;
+        float d2 = sqrt(sq(dx) + sq(dy));
+        float nx = dy / d2;
+        float ny = -dx / d2;
+        beginShape(QUAD);
+        vertex(toque0.x + nx * escala, toque0.y + ny * escala);
+        vertex(toque.x + nx * escala, toque.y + ny * escala);
+        vertex(toque.x - nx * escala, toque.y - ny * escala);
+        vertex(toque0.x - nx * escala, toque0.y - ny * escala);        
+        endShape();
+      }
+    }
   }
 }

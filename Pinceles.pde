@@ -2,17 +2,16 @@
 // https://editor.p5js.org/codeanticode/sketches/EEURt9RtI
 
 void cargarPinceles() {
-  pinceles = new ArrayList<Pincel>();
-  
+  pinceles = new ArrayList<Pincel>();  
   pinceles.add(new PincelAndiamo1(0, "Andiamo", new char[]{'Q', 'q'}));
   pinceles.add(new PincelLinea(1, "Linea", new char[]{'W', 'w'}));
   pinceles.add(new PincelCinta(2, "Cinta", new char[]{'E', 'e'}));
   pinceles.add(new PincelChispa(3, "Chispa", new char[]{'R', 'r'}));
   pinceles.add(new PincelCirculo(4, "Circulo", new char[]{'T', 't'}));
-  pinceles.add(new PincelCuadrados(5, "Cuadrados", new char[]{'T', 't'}));
   pinceles.add(new PincelYellowTail(6, "YellowTail", new char[]{'Y', 'y'}));
-  pinceles.add(new PincelAbanico(7, "Abanico", new char[]{'U', 'u'}));
-  pinceles.add(new PincelRectangulos(8, "Rectangulos", new char[]{'I', 'i'}));
+  pinceles.add(new PincelCuadrados(5, "Cuadrados", new char[]{'U', 'u'})); 
+  pinceles.add(new PincelAbanico(7, "Abanico", new char[]{'I', 'i'}));
+  pinceles.add(new PincelRectangulos(8, "Rectangulos", new char[]{'O', 'o'}));
 }
 
 boolean distintos(Toque ptoque, Toque toque) {

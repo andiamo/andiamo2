@@ -92,7 +92,9 @@ class Trazo {
     List<Toque> list = toques.subList(0, indice + 1);
     atoques = list.toArray(new Toque[indice + 1]);
     float opacidad = constrain(opacidadCapa * factorOpacidad * factorBorrado * 255, 1, 255);
+    pushStyle();
     pincel.pintar(atoques, tinta.generarColor(opacidad), factorEscala);
+    popStyle();
   }
   
   void borrate() {

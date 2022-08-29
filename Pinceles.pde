@@ -188,9 +188,14 @@ class PincelAbanico extends Pincel  {
     stroke(tinta);
     strokeWeight(escala);
     Toque ptoque = null;
-    for (Toque toque: toques) {      
+    float xc = 0, yc = 0;
+    for (Toque toque: toques) {
+      if (toque.primero) {
+        xc = toque.x; 
+        yc = toque.y;
+      }
       if (distintos(ptoque, toque) && !toque.primero) {        
-        line(toque.x, toque.y, toques[0].x, toques[0].y);
+        line(toque.x, toque.y, xc, yc);
       }
       ptoque = toque;
     } 

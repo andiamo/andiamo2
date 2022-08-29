@@ -11,6 +11,7 @@ void cargarPinceles() {
   pinceles.add(new PincelCirculo(4, "Circulo", new char[]{'T', 't'}));
   pinceles.add(new PincelCajas(5, "Cajas", new char[]{'T', 't'}));
   pinceles.add(new PincelYellowTail(6, "YellowTail", new char[]{'Y', 'y'}));
+  pinceles.add(new PincelAbanico(7, "Abanico", new char[]{'U', 'u'}));
 }
 
 boolean distintos(Toque ptoque, Toque toque) {
@@ -168,5 +169,30 @@ class PincelCajas extends Pincel  {
       float r = 20 * escala * noise(offset + millis() / 2500.0);      
       rect(toque.x, toque.y, r, r);
    }
+  }
+}
+
+class PincelAbanico extends Pincel  {
+  float offset;
+  
+  PincelAbanico(int indice, String nombre, char[] teclas) {
+    super(indice, nombre, teclas);
+    offset = random(10);
+  }
+  
+  Pincel nuevoPincel() {
+    return new PincelAbanico(indice, nombre, teclas);
+  }    
+  
+  void pintar(Toque[] toques, color tinta, float escala) {
+    stroke(tinta);
+    strokeWeight(escala);
+    Toque ptoque = null;
+    for (Toque toque: toques) {      
+      if (distintos(ptoque, toque) && !toque.primero) {        
+        line(toque.x, toque.y, toques[0].x, toques[0].y);
+      }
+      ptoque = toque;
+    } 
   }
 }

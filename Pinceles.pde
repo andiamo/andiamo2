@@ -8,8 +8,8 @@ void cargarPinceles() {
   pinceles.add(new PincelCinta(2, "Cinta", new char[]{'E', 'e'}));
   pinceles.add(new PincelChispa(3, "Chispa", new char[]{'R', 'r'}));
   pinceles.add(new PincelCirculo(4, "Circulo", new char[]{'T', 't'}));
-  pinceles.add(new PincelYellowTail(6, "YellowTail", new char[]{'Y', 'y'}));
-  pinceles.add(new PincelCuadrados(5, "Cuadrados", new char[]{'U', 'u'})); 
+  pinceles.add(new PincelYellowTail(5, "YellowTail", new char[]{'Y', 'y'}));
+  pinceles.add(new PincelCuadrados(6, "Cuadrados", new char[]{'U', 'u'})); 
   pinceles.add(new PincelAbanico(7, "Abanico", new char[]{'I', 'i'}));
   pinceles.add(new PincelRectangulos(8, "Rectangulos", new char[]{'O', 'o'}));
 }

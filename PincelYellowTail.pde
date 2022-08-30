@@ -12,8 +12,6 @@
  * worm-like textures.
  */
 
-import java.awt.Polygon;
-
 class PincelYellowTail extends Pincel {
   float  damp = 5.0;
   float  dampInv = 1.0 / damp;
@@ -47,8 +45,8 @@ class PincelYellowTail extends Pincel {
     polygons = new Polygon[capacity];
     crosses  = new int[capacity];
     for (int i=0; i<capacity; i++) {
-      polygons[i] = new Polygon();
-      polygons[i].npoints = 4;
+      polygons[i] = new Polygon(4);
+      //polygons[i].npoints = 4;
       path[i] = new Vec3f();
       crosses[i] = 0;
     }
@@ -66,7 +64,7 @@ class PincelYellowTail extends Pincel {
     return new PincelYellowTail(indice, nombre, teclas);
   }
 
-  void pintar(Toque[] toques, color tinta, float escala) {
+  void pintar(Toque[] toques, color tinta, float escala) {    
     if (nPoints < toques.length) {
       for (int i = nPoints; i < toques.length; i++) {
         if (distToLast(toques[i].x, toques[i].y) > minMove) {
@@ -120,7 +118,6 @@ class PincelYellowTail extends Pincel {
   }
 
   void addPoint(float x, float y) {
-
     if (nPoints >= capacity) {
       // there are all sorts of possible solutions here,
       // but for abject simplicity, I don't do anything.
@@ -133,6 +130,7 @@ class PincelYellowTail extends Pincel {
         exists = true;
         jumpDx = path[nPoints-1].x - path[0].x;
         jumpDy = path[nPoints-1].y - path[0].y;
+        println(jumpDx, jumpDy);
       }
     }
   }
@@ -242,7 +240,7 @@ class PincelYellowTail extends Pincel {
         // translate the integer coordinates to the viewing rectangle
         axi = axip = (int)ax;
         ayi = ayip = (int)ay;
-        axi=(axi<0)?(w-((-axi)%w)):axi%w;
+        axi=(axi<0)?(w-((-axi)%w)):axi%w;        
         axid = axi-axip;
         ayi=(ayi<0)?(h-((-ayi)%h)):ayi%h;
         ayid = ayi-ayip;
@@ -390,5 +388,17 @@ class Vec3f {
     x = ix;
     y = iy;
     p = ip;
+  }
+}
+
+class Polygon {
+  int npoints;
+  int[] xpoints;
+  int[] ypoints;
+  
+  Polygon(int np) {
+    npoints = np;
+    xpoints = new int[np];
+    ypoints = new int[np];
   }
 }

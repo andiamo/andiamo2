@@ -85,4 +85,10 @@ class CapaDibujo {
       trazo.borrate();
     }
   }
+  
+  void borrarUltimoTrazo() {
+    if (0 < trazos.size()) {
+      trazos.get(trazos.size() - 1).borrate();
+    }
+  }
 }

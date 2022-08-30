@@ -21,7 +21,7 @@ class PincelYellowTail extends Pincel {
   int h;
   int capacity;
 
-  Vec3f path[];
+  Point path[];
   int crosses[];
   Polygon polygons[];
   int nPoints;
@@ -41,13 +41,13 @@ class PincelYellowTail extends Pincel {
     w = width;
     h = height;
     capacity = 600;
-    path = new Vec3f[capacity];
+    path = new Point[capacity];
     polygons = new Polygon[capacity];
     crosses  = new int[capacity];
     for (int i=0; i<capacity; i++) {
       polygons[i] = new Polygon(4);
       //polygons[i].npoints = 4;
-      path[i] = new Vec3f();
+      path[i] = new Point();
       crosses[i] = 0;
     }
     nPoints = 0;
@@ -130,7 +130,6 @@ class PincelYellowTail extends Pincel {
         exists = true;
         jumpDx = path[nPoints-1].x - path[0].x;
         jumpDy = path[nPoints-1].y - path[0].y;
-        println(jumpDx, jumpDy);
       }
     }
   }
@@ -145,7 +144,7 @@ class PincelYellowTail extends Pincel {
   void setPressures() {
     // pressures vary from 0...1
     float pressure;
-    Vec3f tmp;
+    Point tmp;
     float t = 0;
     float u = 1.0 / (nPoints - 1)*TWO_PI;
     for (int i = 0; i < nPoints; i++) {
@@ -157,7 +156,7 @@ class PincelYellowTail extends Pincel {
 
   float distToLast(float ix, float iy) {
     if (nPoints > 0) {
-      Vec3f v = path[nPoints-1];
+      Point v = path[nPoints-1];
       float dx = v.x - ix;
       float dy = v.y - iy;
       return mag(dx, dy);
@@ -171,7 +170,7 @@ class PincelYellowTail extends Pincel {
     if (exists) {
       clearPolys();
 
-      Vec3f p0, p1, p2;
+      Point p0, p1, p2;
       float radius0, radius1;
       float ax, bx, cx, dx;
       float ay, by, cy, dy;
@@ -304,7 +303,7 @@ class PincelYellowTail extends Pincel {
     final float weight = 18;
     final float scale  = 1.0 / (weight + 2);
     int nPointsMinusTwo = nPoints - 2;
-    Vec3f lower, upper, center;
+    Point lower, upper, center;
 
     for (int i = 1; i < nPointsMinusTwo; i++) {
       lower = path[i-1];
@@ -371,16 +370,16 @@ class PincelYellowTail extends Pincel {
   }
 }
 
-class Vec3f {
+class Point {
   float x;
   float y;
   float p;  // Pressure
 
-  Vec3f() {
+  Point() {
     set(0, 0, 0);
   }
 
-  Vec3f(float ix, float iy, float ip) {
+  Point(float ix, float iy, float ip) {
     set(ix, iy, ip);
   }
 

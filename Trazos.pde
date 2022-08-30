@@ -29,8 +29,8 @@ class Trazo {
   int tiempoFinal;
   boolean repetir;
   boolean cerrado;
-  boolean borrando;
-  boolean borrado;
+  boolean removiendo;
+  boolean removido;
   int duracionBorrado;
   int indicePrevio;
   
@@ -47,8 +47,8 @@ class Trazo {
     atoques = new Toque[0];
     repetir = rep;
     cerrado = false;
-    borrando = false;
-    borrado = false;
+    removiendo = false;
+    removido = false;
   }
   
   void cerrate(boolean unico) {
@@ -59,7 +59,7 @@ class Trazo {
     tiempoBorrado = ultimoToque.t;
     agregarUnToque(fakeToque);
     ultimoToque.ultimo = true;
-    borrando = unico;
+    removiendo = unico;
   }
 
   void dibujate(float opacidadCapa) {
@@ -67,7 +67,7 @@ class Trazo {
     
     int indice = toques.size() - 1;
     float factorBorrado = 1;
-    if (cerrado && (repetir || borrando)) {
+    if (cerrado && (repetir || removiendo)) {
       
       int t = (millis() - tiempoComienzo) % (tiempoFinal - tiempoComienzo + 1);
       int indiceCorriente = buscarIndice(t);      
@@ -76,13 +76,15 @@ class Trazo {
         indice = indiceCorriente;
       }
       
-      if (tiempoBorrado - tiempoComienzo <= t) {
-        factorBorrado = 1 - float(t - tiempoBorrado + tiempoComienzo) / duracionBorrado;        
+      if (removiendo || pincel.animarOpacidad) {
+        if (tiempoBorrado - tiempoComienzo <= t) {
+          factorBorrado = 1 - float(t - tiempoBorrado + tiempoComienzo) / duracionBorrado;        
+        }
       }
       
-      if (borrando && (indiceCorriente < indicePrevio || factorBorrado < 0.01)) {
-        borrado = true;
-        borrando = false;
+      if (removiendo && (indiceCorriente < indicePrevio || factorBorrado < 0.01)) {
+        removido = true;
+        removiendo = false;
         return;
       }
       
@@ -91,14 +93,14 @@ class Trazo {
 
     List<Toque> list = toques.subList(0, indice + 1);
     atoques = list.toArray(new Toque[indice + 1]);
-    float opacidad = constrain(opacidadCapa * factorOpacidad * factorBorrado * 255, 1, 255);
+    float opacidad = constrain(opacidadCapa * factorOpacidad * factorBorrado * 255, 1, 255);    
     pushStyle();
     pincel.pintar(atoques, tinta.generarColor(opacidad), factorEscala);
     popStyle();
   }
   
-  void borrate() {
-    borrando = true;
+  void remover() {
+    removiendo = true;
   }
   
   void agregarUnToque(Toque toque) {

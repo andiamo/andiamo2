@@ -23,11 +23,13 @@ abstract class Pincel {
   String nombre;
   char[] teclas;
   int indice;
+  boolean animarOpacidad;
   
   Pincel(int indice, String nombre, char[] teclas) {
     this.indice = indice;
     this.nombre = nombre;
-    this.teclas = teclas;    
+    this.teclas = teclas;
+    this.animarOpacidad = true;
   }
   
   abstract Pincel nuevoPincel();

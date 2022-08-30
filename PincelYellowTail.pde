@@ -38,6 +38,7 @@ class PincelYellowTail extends Pincel {
 
   PincelYellowTail(int indice, String nombre, char[] teclas) {
     super(indice, nombre, teclas);
+    animarOpacidad = false;
     w = width;
     h = height;
     capacity = 600;
@@ -322,8 +323,7 @@ class PincelYellowTail extends Pincel {
     int cr;
 
     beginShape(QUADS);
-    fill(red(tinta), green(tinta), blue(tinta));
-    //fill(tinta);
+    fill(tinta);
     noStroke();
     int gnp = nPolys;
     for (int i=0; i<gnp; i++) {

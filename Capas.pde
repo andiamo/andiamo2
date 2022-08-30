@@ -67,7 +67,7 @@ class CapaDibujo {
     ArrayList<Trazo> paraRemover = new ArrayList<Trazo>();
     for (Trazo trazo: trazos) {
       trazo.dibujate(opacidad.valor);
-      if (trazo.borrado) paraRemover.add(trazo);
+      if (trazo.removido) paraRemover.add(trazo);
     }
     trazos.removeAll(paraRemover);
   }
@@ -82,13 +82,13 @@ class CapaDibujo {
   
   void borrarTrazos() {
     for (Trazo trazo: trazos) {
-      trazo.borrate();
+      trazo.remover();
     }
   }
   
   void borrarUltimoTrazo() {
     if (0 < trazos.size()) {
-      trazos.get(trazos.size() - 1).borrate();
+      trazos.get(trazos.size() - 1).remover();
     }
   }
 }

@@ -152,15 +152,17 @@ class Estado {
         factorEscalaTrazos.establecerObjetivo(nivelesEscalaTrazos[nivelEscalaSeleccionado]);
       }
     } else {
-      if (key == DELETE || key == BACKSPACE) {        
-        if (modificador == SHIFT) {
-          if (todasCapasSeleccionadas) {
-             for (CapaDibujo capa: capas) capa.borrarTrazos();
+      if (key == DELETE || key == BACKSPACE) {
+        if (!registrandoTrazo) {
+          if (modificador == SHIFT) {
+            if (todasCapasSeleccionadas) {
+               for (CapaDibujo capa: capas) capa.borrarTrazos();
+            } else {
+              capas.get(capaSeleccionada).borrarTrazos();
+            }
           } else {
-            capas.get(capaSeleccionada).borrarTrazos();
-          }
-        } else if (!todasCapasSeleccionadas) {
-          capas.get(capaSeleccionada).borrarUltimoTrazo();
+            capas.get(capaSeleccionada).borrarUltimoTrazo();
+          }          
         }
       } else if (keyCode == ENTER || keyCode == RETURN) {
         mostrarTextoDeEstado = !mostrarTextoDeEstado;

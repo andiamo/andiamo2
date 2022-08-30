@@ -10,6 +10,8 @@ char[] teclasSeleccionTodasLasCapas = {'0'};
 char[] teclasOcultarUnaCapa = {'!', '@', '#', '$', '%', '^', '&', '*', '('};
 char[] teclasOcultarTodasLasCapas = {')'};
 
+int modificador = -1;
+
 boolean listaContieneTecla(char[] teclas) {
   for (char tcl: teclas) {
     if (tcl == key) return true;
@@ -25,17 +27,19 @@ int indiceDeTecla(char[] teclas) {
   return -1;
 }
 
+void resetearModificador() {
+  modificador = -1;
+}
 
-int modificador() {
-  int mod = -1;
+int actualizarModificador() {
   if (keyPressed) {
     if (key == CODED) {
       if (keyCode == SHIFT) {
-        mod = SHIFT;
+        modificador = SHIFT;
       }
     }
   }
-  return mod;
+  return modificador;
 }
 
 class Estado {
@@ -113,7 +117,7 @@ class Estado {
       if (unirTrazos) {
         nuevoTrazo.toquePrevioEsUltimo();
       } else {
-        cerrarTrazo(capas.get(capaSeleccionada), modificador() == SHIFT);
+        cerrarTrazo(capas.get(capaSeleccionada), modificador == SHIFT);
       }
     }
   }     
@@ -131,6 +135,8 @@ class Estado {
   }
   
   void procesarTeclado() {
+    actualizarModificador();
+    
     if (key == CODED) {
       if (keyCode == LEFT) {
         nivelOpacidadSeleccionado = constrain(nivelOpacidadSeleccionado - 1, 0, 9);
@@ -146,11 +152,15 @@ class Estado {
         factorEscalaTrazos.establecerObjetivo(nivelesEscalaTrazos[nivelEscalaSeleccionado]);
       }
     } else {
-      if (key == DELETE || key == BACKSPACE) {
-        if (todasCapasSeleccionadas) {
-          for (CapaDibujo capa: capas) capa.borrarTrazos();
-        } else {
-          capas.get(capaSeleccionada).borrarTrazos();
+      if (key == DELETE || key == BACKSPACE) {        
+        if (modificador == SHIFT) {
+          if (todasCapasSeleccionadas) {
+             for (CapaDibujo capa: capas) capa.borrarTrazos();
+          } else {
+            capas.get(capaSeleccionada).borrarTrazos();
+          }
+        } else if (!todasCapasSeleccionadas) {
+          capas.get(capaSeleccionada).borrarUltimoTrazo();
         }
       } else if (keyCode == ENTER || keyCode == RETURN) {
         mostrarTextoDeEstado = !mostrarTextoDeEstado;
@@ -159,7 +169,7 @@ class Estado {
       } else if (key == TAB) {
         unirTrazos = !unirTrazos;
         if (!unirTrazos) {
-          cerrarTrazo(capas.get(capaSeleccionada), modificador() == SHIFT);
+          cerrarTrazo(capas.get(capaSeleccionada), modificador == SHIFT);
         }
       } else if (listaContieneTecla(teclasSeleccionUnaCapa)) {
         capaSeleccionada = indiceDeTecla(teclasSeleccionUnaCapa);
@@ -201,6 +211,7 @@ class Estado {
           }
         }
       }
+      resetearModificador();
     }
   }
 }

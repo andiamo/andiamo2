@@ -26,7 +26,7 @@ String[] TEXTURE_FILES = {
 
 float INVISIBLE_ALPHA = 1;    // Alpha at which a stroke is considered invisible
 
-class PincelAndiamo1 extends Pincel  {
+class PincelAndiamo extends Pincel  {
   int ribbonDetail;
   int nVertPerStretch;
   int nControl = 0;
@@ -46,7 +46,7 @@ class PincelAndiamo1 extends Pincel  {
   ArrayList<StrokeQuad> quads;
   ArrayList<Integer> quadCount;
   
-  PincelAndiamo1(int indice, String nombre, char[] teclas) {
+  PincelAndiamo(int indice, String nombre, char[] teclas) {
     super(indice, nombre, teclas);
     initRibbons();
     quads = new ArrayList<StrokeQuad>();
@@ -54,7 +54,7 @@ class PincelAndiamo1 extends Pincel  {
   }
   
   Pincel nuevoPincel() {    
-    return new PincelAndiamo1(indice, nombre, teclas);
+    return new PincelAndiamo(indice, nombre, teclas);
   }  
 
   void initRibbons() {

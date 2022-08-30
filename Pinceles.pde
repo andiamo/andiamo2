@@ -3,7 +3,7 @@
 
 void cargarPinceles() {
   pinceles = new ArrayList<Pincel>();  
-  pinceles.add(new PincelAndiamo1(0, "Andiamo", new char[]{'Q', 'q'}));
+  pinceles.add(new PincelAndiamo(0, "Andiamo", new char[]{'Q', 'q'}));
   pinceles.add(new PincelLinea(1, "Linea", new char[]{'W', 'w'}));
   pinceles.add(new PincelCinta(2, "Cinta", new char[]{'E', 'e'}));
   pinceles.add(new PincelChispa(3, "Chispa", new char[]{'R', 'r'}));

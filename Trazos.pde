@@ -117,7 +117,7 @@ class Trazo {
   int buscarIndice(int tiempo) {
     int n = toques.size();
     int mini = 0;
-    int maxi = n;
+    int maxi = n - 1;
     int idx = mini + (maxi - mini)/2;
     int iter = 0;
     while (iter < n) {
@@ -138,7 +138,7 @@ class Trazo {
       idx = mini + (maxi - mini)/2;
       iter++; 
     }
-    return idx;
+    return min(idx, n - 1);
   }  
 }
 

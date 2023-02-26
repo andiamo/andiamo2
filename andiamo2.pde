@@ -4,6 +4,7 @@ ArrayList<Tinta> tintasPincel;
 ArrayList<CapaDibujo> capas;
 LienzoFondo lienzo;
 Estado estado;
+Interface intf;
 
 void settings() {
   if (PANTALLA_COMPLETA) {
@@ -19,6 +20,7 @@ void setup() {
   crearCapas();
   lienzo = new LienzoFondo();
   estado = new Estado();
+  intf = new Interface(this);
 }
 
 void draw() {

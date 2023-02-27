@@ -16,7 +16,7 @@ class Interface {
     
     scaleFactor = scale;
     focused = null;
-    drawn = null; 
+    drawn = new ArrayList<Widget>(); 
     fonts = new HashMap<String, PFont>();
     widgets = new HashMap<String, Widget>();
     root = new Widget(this);
@@ -62,13 +62,14 @@ class Interface {
     }
   }
 
-  void addFont(String name) {
-    PFont font = sketch.loadFont(name);
-    fonts.put(name, font);
+  void addFont(String name, int size) {
+    PFont font = sketch.createFont(name, scaleFactor * size);
+    fonts.put(name + str(size), font);
   }
 
-  void setFont(String name, int size) {    
-    if (fonts.containsKey(name)) {
+  void setFont(String name, int size) {
+    String key = name + str(size);
+    if (fonts.containsKey(key)) {
       PFont font = fonts.get(key);
       sketch.textFont(font, size);
     }

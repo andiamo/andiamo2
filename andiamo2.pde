@@ -21,6 +21,9 @@ void setup() {
   lienzo = new LienzoFondo();
   estado = new Estado();
   intf = new Interface(this);
+  intf.addFont("Arial", 14);
+  Button button = new Button(intf, width - 100, 10, 80, 30, "", "testClick");
+  intf.addWidget(button);
 }
 
 void draw() {
@@ -28,20 +31,28 @@ void draw() {
   lienzo.pintar();
   pintarCapas();  
   estado.mostrar();
+  intf.update();
 }
 
 void mousePressed() {  
   estado.iniciarTrazo();
+  intf.mousePressed();
 }
 
 void mouseDragged() {
   estado.actualizarTrazo();
+  intf.mouseDragged();
 }
 
 void mouseReleased() {
   estado.terminarTrazo();
+  intf.mouseReleased();
 }
 
 void keyPressed() {
   estado.procesarTeclado();
+}
+
+void testClick() {
+  println("click");
 }

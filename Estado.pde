@@ -46,8 +46,8 @@ class Estado {
   Trazo nuevoTrazo;
   boolean registrandoTrazo;
   int pincelSeleccionado;
-  int tintaPincelSeleccionada;
-  int tintaFondoSeleccionada;
+  Tinta tintaPincelSeleccionada;
+  Tinta tintaFondoSeleccionada;
   int capaSeleccionada;
   boolean todasCapasSeleccionadas;
   boolean unirTrazos;
@@ -67,11 +67,11 @@ class Estado {
     
     capaSeleccionada = 0;
     pincelSeleccionado = 0;
-    tintaPincelSeleccionada = 0;  
-    tintaFondoSeleccionada = 0;
+    tintaPincelSeleccionada = tintasPincel.get(0);  
+    tintaFondoSeleccionada = tintasFondo.get(0);
     todasCapasSeleccionadas = false;
     registrandoTrazo = false;
-    mostrarTextoDeEstado = true;
+    mostrarTextoDeEstado = false;
     unirTrazos = false;
     repetirTrazos = true;
     
@@ -98,7 +98,7 @@ class Estado {
       registrandoTrazo = true;
       nuevoTrazo = new Trazo(capas.get(capaSeleccionada), 
                              pinceles.get(pincelSeleccionado).nuevoPincel(), 
-                             tintasPincel.get(tintaPincelSeleccionada), 
+                             tintaPincelSeleccionada, 
                              factorOpacidadTrazos.valor,
                              factorEscalaTrazos.valor,
                              repetirTrazos, millis());
@@ -167,22 +167,16 @@ class Estado {
       } else if (keyCode == ENTER || keyCode == RETURN) {
         mostrarTextoDeEstado = !mostrarTextoDeEstado;
       } else if (key == ' ') {
-        repetirTrazos = !repetirTrazos;
+        invertirRepetirTrazos();
       } else if (key == TAB) {
-        unirTrazos = !unirTrazos;
-        if (!unirTrazos) {
-          cerrarTrazo(capas.get(capaSeleccionada), modificador == SHIFT);
-        }
-      } else if (listaContieneTecla(teclasSeleccionUnaCapa)) {
-        capaSeleccionada = indiceDeTecla(teclasSeleccionUnaCapa);
-        capas.get(capaSeleccionada).mostrar();
-        todasCapasSeleccionadas = false;
+        invertirUnirTrazos();
+      } else if (listaContieneTecla(teclasSeleccionUnaCapa)) {        
+        seleccionarCapa(indiceDeTecla(teclasSeleccionUnaCapa));
       } else if (listaContieneTecla(teclasSeleccionTodasLasCapas)) {
         for (CapaDibujo capa: capas) capa.mostrar();
         todasCapasSeleccionadas = true;        
       } else if (listaContieneTecla(teclasOcultarUnaCapa)) {
-        int i = indiceDeTecla(teclasOcultarUnaCapa);
-        capas.get(i).ocultar();
+        ocultarCapa(indiceDeTecla(teclasOcultarUnaCapa));
       } else if (listaContieneTecla(teclasOcultarTodasLasCapas)) {
         for (CapaDibujo capa: capas) capa.ocultar();         
       } else if (listaContieneTecla(teclasDisminuirTiempoTransicionFondo)) {
@@ -198,22 +192,181 @@ class Estado {
       } else {    
         for (Pincel p: pinceles) {
           if (listaContieneTecla(p.teclas)) {
-            pincelSeleccionado = p.indice;
+            seleccionarPincel(p.indice);
           }
         }
         for (Tinta t: tintasPincel) {
           if (listaContieneTecla(t.teclas)) {
-            tintaPincelSeleccionada = t.indice;
+            tintaPincelSeleccionada = tintasPincel.get(t.indice);
           }
         }
         for (Tinta t: tintasFondo) {
           if (listaContieneTecla(t.teclas)) {
-            tintaFondoSeleccionada = t.indice;
+            tintaFondoSeleccionada = tintasFondo.get(t.indice);
             lienzo.cambiarColor(t);
           }
         }
       }
       resetearModificador();
     }
+  }
+  
+  void seleccionarCapa(int capa) {
+    capaSeleccionada = capa;
+    mostrarCapa(capaSeleccionada);
+    todasCapasSeleccionadas = false;
+  }
+  
+  void ocultarCapa(int capa) {
+    capas.get(capa).ocultar();
+  }
+  
+  void mostrarCapa(int capa) {
+    capas.get(capa).mostrar();
+  }
+  
+  boolean capaEstaOculta(int capa) {
+    return capas.get(capa).oculta();
+  }
+  
+  void seleccionarPincel(int pincel) {
+    pincelSeleccionado = pincel;    
+  }
+  
+  void invertirRepetirTrazos() {
+    repetirTrazos = !repetirTrazos;
+  }
+  
+  void invertirUnirTrazos() {
+    unirTrazos = !unirTrazos;
+    if (!unirTrazos) {
+      cerrarTrazo(capas.get(capaSeleccionada), modificador == SHIFT);
+    }
+  }
+  
+  void crearTintaPincelSeleccionada(color c) {
+    tintaPincelSeleccionada = new Tinta(-1, "user-gen", new char[]{}, c); 
+  }
+  
+  void crearTintaFondoSeleccionada(color c) {
+    tintaFondoSeleccionada = new Tinta(-1, "user-gen", new char[]{}, c);
+    lienzo.cambiarColor(tintaFondoSeleccionada);    
+  }
+  
+}
+
+void toggleUI(String name) {
+  Widget container = intf.getWidget("container");
+  if (container.isVisible) container.hide();
+  else container.show();
+}
+
+void selectLayer(String name) {
+  if (name.equals("selectL1")) {
+    selectLayer(0);
+  } else if (name.equals("selectL2")) {
+    selectLayer(1);
+  } else if (name.equals("selectL3")) {
+    selectLayer(2);
+  } else if (name.equals("selectL4")) {
+    selectLayer(3);
+  } else if (name.equals("selectL5")) {
+    selectLayer(4);
+  } else if (name.equals("selectL6")) {
+    selectLayer(5);
+  } else if (name.equals("selectL7")) {
+    selectLayer(6);
+  } else if (name.equals("selectL8")) {
+    selectLayer(7);
+  } else if (name.equals("selectL9")) {
+    selectLayer(8);
+  }
+}
+
+void selectLayer(int layer) {
+  estado.seleccionarCapa(layer);  
+  for (int i = 1; i <= 9; i++) {
+    SelectButton w = (SelectButton)intf.getWidget("selectL" + i);
+    if (i - 1 != layer) {
+      w.selected = false;
+    }    
+  }
+}
+
+void toggleLayer(String name) {
+  if (name.equals("showL1")) {
+    toggleLayer(0);
+  } else if (name.equals("showL2")) {
+    toggleLayer(1);
+  } else if (name.equals("showL3")) {
+    toggleLayer(2);
+  } else if (name.equals("showL4")) {
+    toggleLayer(3);
+  } else if (name.equals("showL5")) {
+    toggleLayer(4);
+  } else if (name.equals("showL6")) {
+    toggleLayer(5);
+  } else if (name.equals("showL7")) {
+    toggleLayer(6);
+  } else if (name.equals("showL8")) {
+    toggleLayer(7);
+  } else if (name.equals("showL9")) {
+    toggleLayer(8);
+  }
+}
+
+void toggleLayer(int layer) {
+  if (estado.capaEstaOculta(layer)) {
+    estado.mostrarCapa(layer);
+  } else {
+    estado.ocultarCapa(layer);
+  }
+}
+
+void selectBrush(String name) {
+  if (name.equals("selectB1")) {
+    selectBrush(0);
+  } else if (name.equals("selectB2")) {
+    selectBrush(1);
+  } else if (name.equals("selectB3")) {
+    selectBrush(2);
+  } else if (name.equals("selectB4")) {
+    selectBrush(3);
+  } else if (name.equals("selectB5")) {
+    selectBrush(4);
+  } else if (name.equals("selectB6")) {
+    selectBrush(5);
+  } else if (name.equals("selectB7")) {
+    selectBrush(6);
+  } else if (name.equals("selectB8")) {
+    selectBrush(7);
+  }  
+}
+
+void selectBrush(int brush) {
+  estado.seleccionarPincel(brush);
+  for (int i = 1; i <= 8; i++) {
+    SelectButton w = (SelectButton)intf.getWidget("selectB" + i);
+    if (i - 1 != brush) {
+      w.selected = false;
+    }    
+  }
+}
+
+void toggleLoop(String name) {
+  estado.invertirRepetirTrazos();  
+}
+
+void toggleJoin(String name) {
+  estado.invertirUnirTrazos();
+}
+
+void setColor(String name) {
+  if (name.equals("brushColor")) {
+    ColorSelector csel = (ColorSelector)intf.getWidget("brushColor");
+    estado.crearTintaPincelSeleccionada(csel.getColor());
+  } else if (name.equals("backColor")) {
+    ColorSelector csel = (ColorSelector)intf.getWidget("backColor");
+    estado.crearTintaFondoSeleccionada(csel.getColor());
   }
 }

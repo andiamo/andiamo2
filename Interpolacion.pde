@@ -11,6 +11,7 @@ public class NumeroInterpolado {
 
   public NumeroInterpolado(float v) {
     valor = v;
+    objetivo = v;
     interpolando = false;
   }
 

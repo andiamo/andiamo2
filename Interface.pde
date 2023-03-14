@@ -1,11 +1,11 @@
 class Interface {
-    PApplet sketch;
-    float scaleFactor;
-    Widget focused;
-    ArrayList<Widget> drawn;
-    HashMap<String, PFont> fonts;
-    HashMap<String, Widget> widgets;
-    Widget root;
+  PApplet sketch;
+  float scaleFactor;
+  Widget focused;
+  ArrayList<Widget> drawn;
+  HashMap<String, PFont> fonts;
+  HashMap<String, Widget> widgets;
+  Widget root;
     
   Interface(PApplet sketch) {
     this(sketch, 1);

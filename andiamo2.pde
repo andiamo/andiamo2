@@ -18,19 +18,17 @@ void setup() {
   cargarPinceles();
   cargarColores();
   crearCapas();
+  cursor(CROSS);
   lienzo = new LienzoFondo();
   estado = new Estado();
-  intf = new Interface(this);
-  intf.addFont("Arial", 14);
-  Button button = new Button(intf, width - 100, 10, 80, 30, "", "testClick");
-  intf.addWidget(button);
+  createUI();
 }
 
 void draw() {
   estado.actualizar();
   lienzo.pintar();
   pintarCapas();  
-  estado.mostrar();
+  //estado.mostrar();
   intf.update();
 }
 
@@ -51,8 +49,4 @@ void mouseReleased() {
 
 void keyPressed() {
   estado.procesarTeclado();
-}
-
-void testClick() {
-  println("click");
 }

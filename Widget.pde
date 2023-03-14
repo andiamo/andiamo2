@@ -1,22 +1,24 @@
+import java.lang.reflect.*;
+
 class Widget {
-    Interface intf;
-    float relX;
-    float relY;
-    float absX;
-    float absY;
-    float width;
-    float height;
-    float mouseX;
-    float mouseY;
-    float pmouseX;
-    float pmouseY;
-    boolean isFocused;
-    Widget parent;
-    ArrayList<Widget> children;
-    boolean isActive;
-    boolean isVisible;
-    String name;
-    String callback;
+  Interface intf;
+  float relX;
+  float relY;
+  float absX;
+  float absY;
+  float width;
+  float height;
+  float mouseX;
+  float mouseY;
+  float pmouseX;
+  float pmouseY;
+  boolean isFocused;
+  Widget parent;
+  ArrayList<Widget> children;
+  boolean isActive;
+  boolean isVisible;
+  String name;
+  String callback;
     
   Widget() { }  
   
@@ -56,12 +58,35 @@ class Widget {
     isActive = true;
     isVisible = true;
 
-    name = name;
+    this.name = name;
     this.callback = callback;    
   }
 
+
+  //void runCallback() {
+  //  runCallback(new Object[] { });
+  //}
+  
   void runCallback() {
-    intf.sketch.method(callback);
+    PApplet p = intf.sketch;
+    
+    try {
+      Method method = p.getClass().getMethod(callback, new Class[] {String.class});
+      method.invoke(p, new Object[] {name});
+
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.getTargetException().printStackTrace();
+    } catch (NoSuchMethodException nsme) {
+      System.err.println("There is no public " + callback + "() method " +
+                         "in the class " + getClass().getName());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
   }
 
   void setParent(Widget p) {
@@ -177,5 +202,5 @@ class Widget {
   }
 
   void setInvisible() {
-  }
+  }  
 }

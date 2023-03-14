@@ -91,4 +91,8 @@ class CapaDibujo {
       trazos.get(trazos.size() - 1).remover();
     }
   }
+  
+  boolean oculta() {
+    return opacidad.objetivo == 0;
+  }
 }

@@ -22,7 +22,7 @@ void createUI() {
   w = new ToggleButton(intf, left, 0, 30, 30, "toggleJoin", "toggleJoin", "J");
   intf.addWidget(w, intf.getWidget("container"));
   
-  left += 30 + 30;
+  left += 30 + 5;
   
   for (int i = 1; i <= 9; i++) {
     w = new SelectButton(intf, left + (i-1) * 25, 10, 20, 20, "selectL" + i, "selectLayer", "L" + i);
@@ -36,24 +36,193 @@ void createUI() {
     ((ToggleButton)w).toggled = true;
   }
   
-  left += 9 * 25 + 30;
+  left += 9 * 25;
   
-  for (int i = 1; i <= 8; i++) {
-    w = new SelectButton(intf, left + (i-1) * 25, 5, 20, 20, "selectB" + i, "selectBrush", "B" + i);
-    intf.addWidget(w, intf.getWidget("container"));
-    ((SelectButton)w).selected = i == 1;
-  }
+  w = new ToggleButton(intf, left, 0, 20, 10, "delAll", "delAll", "-");
+  intf.addWidget(w, intf.getWidget("container"));
+  w = new ToggleButton(intf, left, 10, 20, 20, "toggleAll", "toggleAll", "A");  
+  intf.addWidget(w, intf.getWidget("container"));
   
-  left += 8 * 25 + 30;
-  
+  left += 45;
+
+  intf.addWidget(new Label(intf, left - 20, 5, 20, 20, "c1"), intf.getWidget("container"));    
   w = new ColorSelector(intf, left, 5, 100, 20, "brushColor", "setColor");
   intf.addWidget(w, intf.getWidget("container"));
   
-  left += 120;  
+  left += 130;
   
+  intf.addWidget(new Label(intf, left - 20, 5, 20, 20, "c0"), intf.getWidget("container"));
   w = new ColorSelector(intf, left, 5, 100, 20, "backColor", "setColor");
   ((ColorSelector)w).setColor(255, 255, 255);
-  intf.addWidget(w, intf.getWidget("container"));  
+  intf.addWidget(w, intf.getWidget("container"));
+  
+  left += 130;
+  
+  intf.addWidget(new Label(intf, left - 15, 5, 15, 20, "o"), intf.getWidget("container"));
+  w = new ValueSlider(intf, left, 10, 60, 10, "brushOpacity", "setOpacity");
+  ((ValueSlider)w).setValue(1);
+  intf.addWidget(w, intf.getWidget("container"));
+  
+  left += 80;
+  
+  intf.addWidget(new Label(intf, left - 15, 5, 15, 20, "e"), intf.getWidget("container"));
+  w = new ValueSlider(intf, left, 10, 60, 10, "brushScale", "setScale");
+  ((ValueSlider)w).setValue(0.5);
+  intf.addWidget(w, intf.getWidget("container"));
+
+  left += 80;
+  
+  intf.addWidget(new Label(intf, left - 15, 5, 15, 20, "b"), intf.getWidget("container"));
+  w = new ValueSlider(intf, left, 10, 60, 10, "eraseSpeed", "setEraseSpeed");
+  ((ValueSlider)w).setValue(0.5);
+  intf.addWidget(w, intf.getWidget("container"));
+  
+  left += 80;
+  
+  intf.addWidget(new Label(intf, left - 15, 5, 15, 20, "f"), intf.getWidget("container"));
+  w = new ValueSlider(intf, left, 10, 60, 10, "backChangeSpeed", "setBackChangeSpeed");
+  ((ValueSlider)w).setValue(0.5);
+  intf.addWidget(w, intf.getWidget("container"));
+  
+  left += 80;
+  
+  agregarPincelesAlUI(left);
+}
+
+void toggleUI(String name) {
+  estado.invertirMostrarUI();  
+}
+
+void selectLayer(String name) {
+  if (name.equals("selectL1")) {
+    selectLayer(0);
+  } else if (name.equals("selectL2")) {
+    selectLayer(1);
+  } else if (name.equals("selectL3")) {
+    selectLayer(2);
+  } else if (name.equals("selectL4")) {
+    selectLayer(3);
+  } else if (name.equals("selectL5")) {
+    selectLayer(4);
+  } else if (name.equals("selectL6")) {
+    selectLayer(5);
+  } else if (name.equals("selectL7")) {
+    selectLayer(6);
+  } else if (name.equals("selectL8")) {
+    selectLayer(7);
+  } else if (name.equals("selectL9")) {
+    selectLayer(8);
+  }
+}
+
+void selectLayer(int layer) {
+  estado.seleccionarCapa(layer);  
+  for (int i = 1; i <= 9; i++) {
+    SelectButton w = (SelectButton)intf.getWidget("selectL" + i);
+    if (i - 1 != layer) {
+      w.selected = false;
+    }    
+  }
+}
+
+void toggleLayer(String name) {
+  if (name.equals("showL1")) {
+    toggleLayer(0);
+  } else if (name.equals("showL2")) {
+    toggleLayer(1);
+  } else if (name.equals("showL3")) {
+    toggleLayer(2);
+  } else if (name.equals("showL4")) {
+    toggleLayer(3);
+  } else if (name.equals("showL5")) {
+    toggleLayer(4);
+  } else if (name.equals("showL6")) {
+    toggleLayer(5);
+  } else if (name.equals("showL7")) {
+    toggleLayer(6);
+  } else if (name.equals("showL8")) {
+    toggleLayer(7);
+  } else if (name.equals("showL9")) {
+    toggleLayer(8);
+  }
+}
+
+void toggleLayer(int layer) {
+  if (estado.capaEstaOculta(layer)) {
+    estado.mostrarCapa(layer);
+  } else {
+    estado.ocultarCapa(layer);
+  }
+}
+
+void toggleLoop(String name) {
+  estado.invertirRepetirTrazos();  
+}
+
+void toggleJoin(String name) {
+  estado.invertirUnirTrazos();
+}
+
+void toggleAll(String name) {
+  estado.invertirSeleccionarTodas();  
+}
+
+void delAll(String name) {
+  estado.invertirBorrarTodos();
+}
+
+void setColor(String name) {
+  if (name.equals("brushColor")) {
+    ColorSelector csel = (ColorSelector)intf.getWidget("brushColor");
+    estado.crearTintaPincelSeleccionada(csel.getColor());
+  } else if (name.equals("backColor")) {
+    ColorSelector csel = (ColorSelector)intf.getWidget("backColor");
+    estado.crearTintaFondoSeleccionada(csel.getColor());
+  }
+}
+
+void setOpacity(String name) {
+  ValueSlider vsli = (ValueSlider)intf.getWidget("brushOpacity");    
+  estado.establecerFactorOpacidad(vsli.getValue());
+}
+
+void setScale(String name) {
+  ValueSlider vsli = (ValueSlider)intf.getWidget("brushScale");    
+  estado.establecerFactorEscala(vsli.getValue());
+}
+
+void setEraseSpeed(String name) {
+  ValueSlider vsli = (ValueSlider)intf.getWidget("eraseSpeed");    
+  estado.establecerTiempoBorradoTrazos(vsli.getValue());  
+}
+
+void setBackChangeSpeed(String name) {
+  ValueSlider vsli = (ValueSlider)intf.getWidget("backChangeSpeed");
+  estado.establecerTiempoTransicionFondo(vsli.getValue());
+}
+
+class Label extends Widget {
+  String text = "";
+  
+  Label() { }
+    
+  Label(Interface intf, float x, float y, float w, float h, String txt) {
+    super(intf, x, y, w, h, "", "");
+    text = txt;
+  }
+  
+  Label(Interface intf, float x, float y, float w, float h, String name, String txt) {
+    super(intf, x, y, w, h, name, "");
+    text = txt;
+  }
+  
+  void draw() {
+    PApplet p = intf.sketch;
+    intf.setFont("Arial", 14);
+    p.fill(0);    
+    p.textAlign(CENTER, CENTER);
+    p.text(text, 0, 0, width, height);
+  }  
 }
 
 class SelectButton extends Widget {
@@ -91,7 +260,7 @@ class SelectButton extends Widget {
     p.text(label, 0, 0, width, height);
   }
   
-  void press() {
+  void release() {
     selected = true;
     runCallback();
   }
@@ -132,7 +301,7 @@ class ToggleButton extends Widget {
     p.text(label, 0, 0, width, height);
   }
   
-  void press() {
+  void release() {
     toggled = !toggled;
     runCallback();
   }
@@ -154,8 +323,10 @@ class Container extends Widget {
 }
 
 class ColorSelector extends Widget {
-  float r, g, b;
-  boolean outdated;
+  float r = 0; 
+  float g = 0; 
+  float b = 0;
+  boolean outdated = false;
   
   ColorSelector() { }
   
@@ -235,7 +406,7 @@ class ColorSelector extends Widget {
     }    
   }
   
-  void press() {
+  void release() {
     float mixw = width * 0.2;
     if (0 <= mouseX && mouseX <= mixw) {
       runCallback();
@@ -245,8 +416,7 @@ class ColorSelector extends Widget {
 }
 
 class ValueSlider extends Widget {
-  String label;
-  float value;
+  float value = 0;
   
   ValueSlider() { }
   
@@ -254,14 +424,12 @@ class ValueSlider extends Widget {
     super(intf, x, y, w, h);
   }
 
-  ValueSlider(Interface intf, float x, float y, float w, float h, String callback, String label) {
+  ValueSlider(Interface intf, float x, float y, float w, float h, String callback) {
     super(intf, x, y, w, h, "", callback);
-    this.label = label;
   }
 
-  ValueSlider(Interface intf, float x, float y, float w, float h, String name, String callback, String label) {
+  ValueSlider(Interface intf, float x, float y, float w, float h, String name, String callback) {
     super(intf, x, y, w, h, name, callback);
-    this.label = label;
   }
   
   void setValue(float v) {
@@ -285,7 +453,10 @@ class ValueSlider extends Widget {
   
   void drag() {
     value = (float)(mouseX) / width;
-    runCallback();
   }
   
+  void release() {
+    value = (float)(mouseX) / width;
+    runCallback();
+  }
 }

@@ -27,8 +27,7 @@ void setup() {
 void draw() {
   estado.actualizar();
   lienzo.pintar();
-  pintarCapas();  
-  //estado.mostrar();
+  pintarCapas();
   intf.update();
 }
 

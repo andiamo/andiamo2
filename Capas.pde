@@ -47,7 +47,7 @@ class LienzoFondo {
     tintaActual = tinta;
     tiempoCambio = millis();
     cambiando = true;
-    duracionCambio = tiemposTransicionFondo[estado.tiempoTransicionFondoSeleccionado];
+    duracionCambio = (int)estado.tiempoTransicionFondo.valor;
   }
 }
 

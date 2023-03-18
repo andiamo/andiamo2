@@ -165,9 +165,12 @@ class Estado {
   void seleccionarCapa(int capa) {
     capaSeleccionada = capa;
     todasCapasSeleccionadas = false;
+
     ToggleButton button = (ToggleButton)intf.getWidget("selectAll");
     button.toggled = false;
     
+    ValueSlider vsli = (ValueSlider)intf.getWidget("layerOpacity");
+    vsli.setValue(capas.get(capaSeleccionada).opacidad.objetivo);
   }
   
   void ocultarCapa(int capa) {
@@ -213,6 +216,9 @@ class Estado {
       ToggleButton button = (ToggleButton)intf.getWidget("showL" + (i + 1));
       button.toggled = true;        
     }
+    
+    ValueSlider vsli = (ValueSlider)intf.getWidget("layerOpacity");
+    vsli.setValue(capa.opacidad.objetivo);
   }
   
   void disminuirOpacidad() {
@@ -232,6 +238,32 @@ class Estado {
       ToggleButton button = (ToggleButton)intf.getWidget("showL" + (i + 1));
       button.toggled = false;
     }
+    
+    ValueSlider vsli = (ValueSlider)intf.getWidget("layerOpacity");
+    vsli.setValue(capa.opacidad.objetivo);
+  }
+  
+  void establecerOpacidadDeCapa(float f) {
+    if (todasCapasSeleccionadas) {
+      for (int i = 0; i < capas.size(); i++) establecerOpacidadDeCapa(i, f);
+    } else {
+      establecerOpacidadDeCapa(capaSeleccionada, f);
+    }
+    
+    ToggleButton button = (ToggleButton)intf.getWidget("showAll");
+    button.toggled = numeroCapasOcultas() == 0;
+  }
+  
+  void establecerOpacidadDeCapa(int i, float f) {
+    CapaDibujo capa = capas.get(i);
+    capa.establecerOpacidad(f);   
+    if (capa.oculta()) {
+      ToggleButton button = (ToggleButton)intf.getWidget("showL" + (i + 1));
+      button.toggled = false;
+    } else {
+      ToggleButton button = (ToggleButton)intf.getWidget("showL" + (i + 1));
+      button.toggled = true; 
+    }    
   }
   
   void borrarTrazos() {

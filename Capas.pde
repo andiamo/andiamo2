@@ -89,6 +89,10 @@ class CapaDibujo {
     opacidad.establecerObjetivo(constrain(opacidad.objetivo - d, 0, 1));
   }
   
+  void establecerOpacidad(float v) {
+    opacidad.establecerObjetivo(constrain(v, 0, 1));
+  }
+  
   void borrarTrazos() {
     for (Trazo trazo: trazos) {
       trazo.remover();

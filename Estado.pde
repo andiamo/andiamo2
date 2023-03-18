@@ -10,6 +10,7 @@ class Estado {
   boolean todasCapasSeleccionadas;
   boolean unirTrazos;
   boolean repetirTrazos;
+  boolean borrarTrazosAuto;
   
   boolean mostrarTextoDeEstado;
   boolean mostrarUI;
@@ -39,6 +40,7 @@ class Estado {
     
     unirTrazos = false;
     repetirTrazos = true;
+    borrarTrazosAuto = false; 
     
     tiempoBorradoTrazos = new NumeroInterpolado(2000);   
     tiempoTransicionFondo = new NumeroInterpolado(2000);
@@ -78,7 +80,7 @@ class Estado {
       if (unirTrazos) {
         nuevoTrazo.toquePrevioEsUltimo();
       } else {
-        cerrarTrazo(capas.get(capaSeleccionada));
+        cerrarTrazo(capas.get(capaSeleccionada), borrarTrazosAuto);
       }
     }
   }
@@ -178,6 +180,31 @@ class Estado {
   
   void invertirRepetirTrazos() {
     repetirTrazos = !repetirTrazos;
+    if (repetirTrazos) {
+      borrarTrazosAuto = false;
+      ToggleButton button = (ToggleButton)intf.getWidget("toggleAuto");
+      button.toggled = false;
+    }
+  }
+  
+  void invertirBorrarTrazosAuto() {
+    borrarTrazosAuto = !borrarTrazosAuto;
+    if (borrarTrazosAuto) {
+      repetirTrazos = false;
+      ToggleButton button = (ToggleButton)intf.getWidget("toggleLoop");
+      button.toggled = false;
+    }
+  }
+  
+  void invertirUnirTrazos() {
+    unirTrazos = !unirTrazos;
+    if (!unirTrazos) {
+      cerrarTrazo(capas.get(capaSeleccionada), borrarTrazosAuto);
+    }
+  }  
+
+  void invertirBorrarTodos() {
+    borrarTodosLosTrazos = !borrarTodosLosTrazos;
   }
   
   void invertirSeleccionarTodasLasCapas() {
@@ -192,23 +219,12 @@ class Estado {
     }  
   }
   
-  void invertirBorrarTodos() {
-    borrarTodosLosTrazos = !borrarTodosLosTrazos;
-  }
-  
   void invertirMostrarUI() {
     mostrarUI = !mostrarUI;
     
     Widget container = intf.getWidget("container");
     if (container.isVisible) container.hide();
     else container.show();    
-  }
-  
-  void invertirUnirTrazos() {
-    unirTrazos = !unirTrazos;
-    if (!unirTrazos) {
-      cerrarTrazo(capas.get(capaSeleccionada));
-    }
   }
   
   void crearTintaPincelSeleccionada(color c) {

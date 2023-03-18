@@ -13,21 +13,26 @@ void createUI() {
   
   float left = 5;
   
-  w = new ToggleButton(intf, left, 0, 30, 30, "toggleLoop", "toggleLoop", "R");
+  w = new ToggleButton(intf, left, 0, 20, 30, "toggleLoop", "toggleLoop", "R");
   intf.addWidget(w, intf.getWidget("container"));
   ((ToggleButton)w).toggled = true;
 
-  left += 30 + 5;
+  left += 20 + 5;  
   
-  w = new ToggleButton(intf, left, 0, 30, 30, "toggleJoin", "toggleJoin", "U");
+  w = new ToggleButton(intf, left, 0, 20, 30, "toggleAuto", "toggleAuto", "1");
+  intf.addWidget(w, intf.getWidget("container"));
+
+  left += 20 + 5;
+  
+  w = new ToggleButton(intf, left, 0, 20, 30, "toggleJoin", "toggleJoin", "U");
   intf.addWidget(w, intf.getWidget("container"));
   
-  left += 30 + 5;
+  left += 20 + 5;
   
-  w = new ToggleButton(intf, left, 0, 30, 30, "delAll", "delAll", "B");
+  w = new ToggleButton(intf, left, 0, 20, 30, "delAll", "delAll", "B");
   intf.addWidget(w, intf.getWidget("container"));
   
-  left += 30 + 5;
+  left += 20 + 5;
   
   for (int i = 1; i <= 9; i++) {
     w = new SelectButton(intf, left + (i-1) * 25, 10, 20, 20, "selectL" + i, "selectLayer", "C" + i);
@@ -130,6 +135,10 @@ void toggleLayer(String name) {
 
 void toggleLoop(String name) {
   estado.invertirRepetirTrazos();  
+}
+
+void toggleAuto(String name) {
+  estado.invertirBorrarTrazosAuto();
 }
 
 void toggleJoin(String name) {

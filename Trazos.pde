@@ -7,10 +7,10 @@ Toque crearToque(boolean primero) {
   return toque;
 }
 
-void cerrarTrazo(CapaDibujo capa) {  
+void cerrarTrazo(CapaDibujo capa, boolean unico) {  
   if (capa.trazos.size() == MAX_TRAZOS) capa.trazos.remove(0);
   if (estado.nuevoTrazo != null) {
-    estado.nuevoTrazo.cerrate();
+    estado.nuevoTrazo.cerrate(unico);
     capa.trazos.add(estado.nuevoTrazo);
     estado.registrandoTrazo = false;    
   }
@@ -51,7 +51,7 @@ class Trazo {
     removido = false;
   }
   
-  void cerrate() {
+  void cerrate(boolean unico) {
     cerrado = true;
     duracionBorrado = int(estado.tiempoBorradoTrazos.valor);
     Toque ultimoToque = toques.get(toques.size() - 1);  
@@ -59,7 +59,7 @@ class Trazo {
     tiempoBorrado = ultimoToque.t;
     agregarUnToque(fakeToque);
     ultimoToque.ultimo = true;
-    removiendo = false;
+    removiendo = unico;
   }
 
   void dibujate(float opacidadCapa) {

@@ -339,6 +339,12 @@ class ColorSelector extends Widget {
     this.b = b / 255.0;
   }
   
+  void setColor(color c) {
+    this.r = red(c) / 255.0;
+    this.g = red(c) / 255.0;
+    this.b = blue(c) / 255.0;
+  }  
+  
   color getColor() {
     return color(255 * r, 255 * g, 255 * b);
   }

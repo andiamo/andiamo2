@@ -128,8 +128,29 @@ class Estado {
         invertirSeleccionarTodasLasCapas();
         ToggleButton button = (ToggleButton)intf.getWidget("selectAll");
         button.toggled = todasCapasSeleccionadas;        
-      }
-    }
+      } else {
+        for (Pincel p: pinceles) {
+          if (listaContieneTecla(p.teclas)) {
+            seleccionarPincel(p.indice);            
+          }
+        }
+        for (Tinta t: tintasPincel) {
+          if (listaContieneTecla(t.teclas)) {
+            tintaPincelSeleccionada = tintasPincel.get(t.indice);
+             ColorSelector csel = (ColorSelector)intf.getWidget("brushColor");
+             csel.setColor(tintaPincelSeleccionada.generarColor());            
+          }
+        }
+        for (Tinta t: tintasFondo) {
+          if (listaContieneTecla(t.teclas)) {
+            tintaFondoSeleccionada = tintasFondo.get(t.indice);
+            lienzo.cambiarColor(t);
+            ColorSelector csel = (ColorSelector)intf.getWidget("backColor");
+            csel.setColor(tintaFondoSeleccionada.generarColor());
+          }
+        }
+      }      
+    } 
   }
   
   boolean listaContieneTecla(char[] teclas) {
@@ -182,7 +203,8 @@ class Estado {
   }
   
   void seleccionarPincel(int pincel) {
-    pincelSeleccionado = pincel;    
+    pincelSeleccionado = pincel;
+    actualizarInterfacePinceles(pincel);
   }
   
   void invertirRepetirTrazos() {
@@ -272,28 +294,3 @@ class Estado {
     tiempoTransicionFondo.establecerObjetivo(f);    
   }
 }
-
-
-    //else {
-      
-    //    for (Pincel p: pinceles) {
-    //      if (listaContieneTecla(p.teclas)) {
-    //        seleccionarPincel(p.indice);
-    //      }
-    //    }
-    //    for (Tinta t: tintasPincel) {
-    //      if (listaContieneTecla(t.teclas)) {
-    //        tintaPincelSeleccionada = tintasPincel.get(t.indice);
-    //      }
-    //    }
-    //    for (Tinta t: tintasFondo) {
-    //      if (listaContieneTecla(t.teclas)) {
-    //        tintaFondoSeleccionada = tintasFondo.get(t.indice);
-    //        lienzo.cambiarColor(t);
-    //      }
-    //    }
-    //  }
-    //}
-    
-    
-   

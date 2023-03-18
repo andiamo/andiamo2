@@ -22,6 +22,13 @@ void agregarPincelesAlInterface(float left) {
   }  
 }
 
+void actualizarInterfacePinceles(int sel) {
+  for (int i = 1; i <= 8; i++) {
+    SelectButton button = (SelectButton)intf.getWidget("pincel" + i);
+    button.selected = sel == i - 1;
+  }
+}
+
 void seleccionarPincel(String nombre) {
   for (int i = 1; i <= 8; i++) {
     if (nombre.equals("pincel" + i)) {

@@ -41,7 +41,7 @@ void createUI() {
   }
   
   for (int i = 1; i <= 9; i++) {
-    w = new ToggleButton(intf, left + (i-1) * 25, 0, 20, 10, "showL" + i, "toggleLayer", "-");
+    w = new ToggleButton(intf, left + (i-1) * 25, 0, 20, 10, "showL" + i, "showLayer", "-");
     intf.addWidget(w, intf.getWidget("container"));
     ((ToggleButton)w).toggled = true;
   }
@@ -52,7 +52,7 @@ void createUI() {
   intf.addWidget(w, intf.getWidget("container"));
   ((ToggleButton)w).toggled = true;
   
-  w = new ToggleButton(intf, left, 10, 20, 20, "toggleAll", "toggleAll", "T");  
+  w = new ToggleButton(intf, left, 10, 20, 20, "selectAll", "selectAll", "T");  
   intf.addWidget(w, intf.getWidget("container"));
   
   left += 45;
@@ -120,11 +120,11 @@ void selectLayer(String name) {
   }
 }
 
-void toggleLayer(String name) {
+void showLayer(String name) {
   for (int i = 1; i <= 9; i++) {
     if (name.equals("showL" + i)) {
       int sel = i - 1;
-      if (estado.capaEstaOculta(sel)) {
+      if (estado.capaEstaOcultando(sel)) {
         estado.mostrarCapa(sel);
       } else {
         estado.ocultarCapa(sel);
@@ -146,11 +146,16 @@ void toggleJoin(String name) {
 }
 
 void showAll(String name) {
-  estado.mostrarTodasLasCapas();  
+  ToggleButton button = (ToggleButton)intf.getWidget("showAll");
+  if (button.toggled) {
+    estado.mostrarTodasLasCapas();
+  } else {
+    estado.ocultarTodasLasCapas();
+  }   
 }
 
-void toggleAll(String name) {
-  estado.invertirSeleccionarTodasLasCapas();  
+void selectAll(String name) {
+  estado.invertirSeleccionarTodasLasCapas();
 }
 
 void delAll(String name) {

@@ -117,6 +117,17 @@ class Estado {
         invertirUnirTrazos();
         ToggleButton button = (ToggleButton)intf.getWidget("toggleJoin");
         button.toggled = unirTrazos;      
+      } else if (listaContieneTecla(teclasSeleccionUnaCapa)) {
+        int sel = indiceDeTecla(teclasSeleccionUnaCapa);
+        seleccionarCapa(sel);
+        for (int i = 1; i <= 9; i++) {
+          SelectButton w = (SelectButton)intf.getWidget("selectL" + i);          
+          w.selected = i - 1 == sel;
+        }
+      } else if (listaContieneTecla(teclasSeleccionTodasLasCapas)) {
+        invertirSeleccionarTodasLasCapas();
+        ToggleButton button = (ToggleButton)intf.getWidget("selectAll");
+        button.toggled = todasCapasSeleccionadas;        
       }
     }
   }
@@ -138,9 +149,8 @@ class Estado {
   
   void seleccionarCapa(int capa) {
     capaSeleccionada = capa;
-    mostrarCapa(capaSeleccionada);
     todasCapasSeleccionadas = false;
-    ToggleButton button = (ToggleButton)intf.getWidget("toggleAll");
+    ToggleButton button = (ToggleButton)intf.getWidget("selectAll");
     button.toggled = false;
     
   }
@@ -148,26 +158,23 @@ class Estado {
   void ocultarCapa(int capa) {
     capas.get(capa).ocultar();
     ToggleButton button = (ToggleButton)intf.getWidget("showAll");
-    button.toggled = false;
-      
+    button.toggled = false;      
   }
   
   void mostrarCapa(int capa) {
     capas.get(capa).mostrar();
-    if (numeroCapasOcultas() == 0) {
-      ToggleButton button = (ToggleButton)intf.getWidget("showAll");
-      button.toggled = true;
-    }    
+    ToggleButton button = (ToggleButton)intf.getWidget("showAll");
+    button.toggled = numeroCapasOcultas() == 0;    
   }
   
-  boolean capaEstaOculta(int capa) {
-    return capas.get(capa).oculta();
+  boolean capaEstaOcultando(int capa) {
+    return capas.get(capa).ocultando();
   }
   
   int numeroCapasOcultas() {
     int num = 0;
     for (CapaDibujo capa: capas) {
-      if (capa.oculta()) {
+      if (capa.ocultando()) {
         num += 1;
       }
     }
@@ -217,6 +224,14 @@ class Estado {
       ToggleButton button = (ToggleButton)intf.getWidget("showL" + i);
       button.toggled = true;
     }  
+  }
+  
+  void ocultarTodasLasCapas() {
+    for (CapaDibujo capa: capas) capa.ocultar();    
+    for (int i = 1; i <= 9; i++) {
+      ToggleButton button = (ToggleButton)intf.getWidget("showL" + i);
+      button.toggled = false;
+    }
   }
   
   void invertirMostrarUI() {
@@ -281,9 +296,4 @@ class Estado {
     //}
     
     
- //else if (listaContieneTecla(teclasSeleccionUnaCapa)) {        
- //       seleccionarCapa(indiceDeTecla(teclasSeleccionUnaCapa));
- //     } else if (listaContieneTecla(teclasSeleccionTodasLasCapas)) {
- //       for (CapaDibujo capa: capas) capa.mostrar();
- //       todasCapasSeleccionadas = true;
- //     }    
+   

@@ -14,42 +14,27 @@ void cargarPinceles() {
   pinceles.add(new PincelRectangulos(8, "Rectangulos", new char[]{'O', 'o'}));
 }
 
-void agregarPincelesAlUI(float left) {
+void agregarPincelesAlInterface(float left) {
   for (int i = 1; i <= 8; i++) {
-    Widget w = new SelectButton(intf, left + (i-1) * 25, 5, 20, 20, "selectB" + i, "selectBrush", "B" + i);
+    Widget w = new SelectButton(intf, left + (i-1) * 25, 5, 20, 20, "pincel" + i, "seleccionarPincel", "P" + i);
     intf.addWidget(w, intf.getWidget("container"));
     ((SelectButton)w).selected = i == 1;
   }  
 }
 
-void selectBrush(String name) {
-  if (name.equals("selectB1")) {
-    selectBrush(0);
-  } else if (name.equals("selectB2")) {
-    selectBrush(1);
-  } else if (name.equals("selectB3")) {
-    selectBrush(2);
-  } else if (name.equals("selectB4")) {
-    selectBrush(3);
-  } else if (name.equals("selectB5")) {
-    selectBrush(4);
-  } else if (name.equals("selectB6")) {
-    selectBrush(5);
-  } else if (name.equals("selectB7")) {
-    selectBrush(6);
-  } else if (name.equals("selectB8")) {
-    selectBrush(7);
-  }  
-}
-
-void selectBrush(int brush) {
-  estado.seleccionarPincel(brush);
+void seleccionarPincel(String nombre) {
   for (int i = 1; i <= 8; i++) {
-    SelectButton w = (SelectButton)intf.getWidget("selectB" + i);
-    if (i - 1 != brush) {
-      w.selected = false;
+    if (nombre.equals("pincel" + i)) {
+      int sel = i - 1;
+      estado.seleccionarPincel(sel);
+      for (int j = 1; j <= 8; j++) {
+        SelectButton w = (SelectButton)intf.getWidget("pincel" + j);
+        if (j - 1 != sel) {
+          w.selected = false;
+        }    
+      }
     }    
-  }
+  }  
 }
 
 boolean distintos(Toque ptoque, Toque toque) {

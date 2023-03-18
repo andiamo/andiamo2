@@ -4,7 +4,7 @@ void createUI() {
   
   Widget w;
   
-  w = new ToggleButton(intf, 0, 0, 30, 30, "toggleUI", "toggleUI", "UI");
+  w = new ToggleButton(intf, 0, 0, 30, 30, "toggleUI", "toggleUI", "I");
   intf.addWidget(w);
   
   w = new Container(intf, 30, 0, width - 30, 30, "container");
@@ -13,19 +13,24 @@ void createUI() {
   
   float left = 5;
   
-  w = new ToggleButton(intf, left, 0, 30, 30, "toggleLoop", "toggleLoop", "L");
+  w = new ToggleButton(intf, left, 0, 30, 30, "toggleLoop", "toggleLoop", "R");
   intf.addWidget(w, intf.getWidget("container"));
   ((ToggleButton)w).toggled = true;
 
   left += 30 + 5;
   
-  w = new ToggleButton(intf, left, 0, 30, 30, "toggleJoin", "toggleJoin", "J");
+  w = new ToggleButton(intf, left, 0, 30, 30, "toggleJoin", "toggleJoin", "U");
+  intf.addWidget(w, intf.getWidget("container"));
+  
+  left += 30 + 5;
+  
+  w = new ToggleButton(intf, left, 0, 30, 30, "delAll", "delAll", "B");
   intf.addWidget(w, intf.getWidget("container"));
   
   left += 30 + 5;
   
   for (int i = 1; i <= 9; i++) {
-    w = new SelectButton(intf, left + (i-1) * 25, 10, 20, 20, "selectL" + i, "selectLayer", "L" + i);
+    w = new SelectButton(intf, left + (i-1) * 25, 10, 20, 20, "selectL" + i, "selectLayer", "C" + i);
     intf.addWidget(w, intf.getWidget("container"));
     ((SelectButton)w).selected = i == 1;
   }
@@ -38,20 +43,22 @@ void createUI() {
   
   left += 9 * 25;
   
-  w = new ToggleButton(intf, left, 0, 20, 10, "delAll", "delAll", "-");
+  w = new ToggleButton(intf, left, 0, 20, 10, "showAll", "showAll", "-");
   intf.addWidget(w, intf.getWidget("container"));
-  w = new ToggleButton(intf, left, 10, 20, 20, "toggleAll", "toggleAll", "A");  
+  ((ToggleButton)w).toggled = true;
+  
+  w = new ToggleButton(intf, left, 10, 20, 20, "toggleAll", "toggleAll", "T");  
   intf.addWidget(w, intf.getWidget("container"));
   
   left += 45;
 
-  intf.addWidget(new Label(intf, left - 20, 5, 20, 20, "c1"), intf.getWidget("container"));    
+  intf.addWidget(new Label(intf, left - 20, 5, 20, 20, "cp"), intf.getWidget("container"));    
   w = new ColorSelector(intf, left, 5, 100, 20, "brushColor", "setColor");
   intf.addWidget(w, intf.getWidget("container"));
   
   left += 130;
   
-  intf.addWidget(new Label(intf, left - 20, 5, 20, 20, "c0"), intf.getWidget("container"));
+  intf.addWidget(new Label(intf, left - 20, 5, 20, 20, "cf"), intf.getWidget("container"));
   w = new ColorSelector(intf, left, 5, 100, 20, "backColor", "setColor");
   ((ColorSelector)w).setColor(255, 255, 255);
   intf.addWidget(w, intf.getWidget("container"));
@@ -86,7 +93,7 @@ void createUI() {
   
   left += 80;
   
-  agregarPincelesAlUI(left);
+  agregarPincelesAlInterface(left);
 }
 
 void toggleUI(String name) {
@@ -94,64 +101,30 @@ void toggleUI(String name) {
 }
 
 void selectLayer(String name) {
-  if (name.equals("selectL1")) {
-    selectLayer(0);
-  } else if (name.equals("selectL2")) {
-    selectLayer(1);
-  } else if (name.equals("selectL3")) {
-    selectLayer(2);
-  } else if (name.equals("selectL4")) {
-    selectLayer(3);
-  } else if (name.equals("selectL5")) {
-    selectLayer(4);
-  } else if (name.equals("selectL6")) {
-    selectLayer(5);
-  } else if (name.equals("selectL7")) {
-    selectLayer(6);
-  } else if (name.equals("selectL8")) {
-    selectLayer(7);
-  } else if (name.equals("selectL9")) {
-    selectLayer(8);
-  }
-}
-
-void selectLayer(int layer) {
-  estado.seleccionarCapa(layer);  
   for (int i = 1; i <= 9; i++) {
-    SelectButton w = (SelectButton)intf.getWidget("selectL" + i);
-    if (i - 1 != layer) {
-      w.selected = false;
-    }    
+    if (name.equals("selectL" + i)) {
+      int sel = i - 1;      
+      estado.seleccionarCapa(sel);
+      for (int j = 1; j <= 9; j++) {
+        SelectButton w = (SelectButton)intf.getWidget("selectL" + j);
+        if (j - 1 != sel) {
+          w.selected = false;
+        }
+      }
+    }
   }
 }
 
 void toggleLayer(String name) {
-  if (name.equals("showL1")) {
-    toggleLayer(0);
-  } else if (name.equals("showL2")) {
-    toggleLayer(1);
-  } else if (name.equals("showL3")) {
-    toggleLayer(2);
-  } else if (name.equals("showL4")) {
-    toggleLayer(3);
-  } else if (name.equals("showL5")) {
-    toggleLayer(4);
-  } else if (name.equals("showL6")) {
-    toggleLayer(5);
-  } else if (name.equals("showL7")) {
-    toggleLayer(6);
-  } else if (name.equals("showL8")) {
-    toggleLayer(7);
-  } else if (name.equals("showL9")) {
-    toggleLayer(8);
-  }
-}
-
-void toggleLayer(int layer) {
-  if (estado.capaEstaOculta(layer)) {
-    estado.mostrarCapa(layer);
-  } else {
-    estado.ocultarCapa(layer);
+  for (int i = 1; i <= 9; i++) {
+    if (name.equals("showL" + i)) {
+      int sel = i - 1;
+      if (estado.capaEstaOculta(sel)) {
+        estado.mostrarCapa(sel);
+      } else {
+        estado.ocultarCapa(sel);
+      }
+    }
   }
 }
 
@@ -163,8 +136,12 @@ void toggleJoin(String name) {
   estado.invertirUnirTrazos();
 }
 
+void showAll(String name) {
+  estado.mostrarTodasLasCapas();  
+}
+
 void toggleAll(String name) {
-  estado.invertirSeleccionarTodas();  
+  estado.invertirSeleccionarTodasLasCapas();  
 }
 
 void delAll(String name) {

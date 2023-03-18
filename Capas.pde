@@ -64,9 +64,10 @@ class CapaDibujo {
   
   void pintar() {
     opacidad.actualizar();
+    if (oculta()) return;
     ArrayList<Trazo> paraRemover = new ArrayList<Trazo>();
     for (Trazo trazo: trazos) {
-      trazo.dibujate(opacidad.valor);
+      trazo.dibujate(opacidad.valor);      
       if (trazo.removido) paraRemover.add(trazo);
     }
     trazos.removeAll(paraRemover);
@@ -93,6 +94,6 @@ class CapaDibujo {
   }
   
   boolean oculta() {
-    return opacidad.objetivo == 0;
+    return abs(opacidad.valor - 0) < 0.001;
   }
 }

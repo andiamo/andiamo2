@@ -85,36 +85,44 @@ class Interface {
     drawn.add(w);
   }
 
-  void mousePressed() {
+  boolean mousePressed() {
     setFocused(sketch.mouseX, sketch.mouseY);
     if (focused != null) {
       focused.setRelMousePos();
       focused.press();
+      return true;
     }
+    return false;
   }
 
-  void mouseMoved() {
+  boolean mouseMoved() {
     setFocused(sketch.mouseX, sketch.mouseY);
     if (focused != null) {
       focused.setRelMousePos();
       focused.hover();
+      return true;
     }
+    return false;
   }
 
-  void mouseDragged() {
+  boolean mouseDragged() {
     setFocused(sketch.mouseX, sketch.mouseY);
     if (focused != null) {
       focused.setRelMousePos();
       focused.drag();
+      return true;
     }
+    return false;
   }
 
-  void mouseReleased() {
+  boolean mouseReleased() {
     setFocused(sketch.mouseX, sketch.mouseY);
     if (focused != null) {
       focused.setRelMousePos();
       focused.release();
+      return true;
     }
+    return false;
   }
 
   void setFocused(int mx, int my) {

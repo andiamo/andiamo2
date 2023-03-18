@@ -31,19 +31,22 @@ void draw() {
   intf.update();
 }
 
-void mousePressed() {  
-  estado.iniciarTrazo();
-  intf.mousePressed();
+void mousePressed() {
+  if (!intf.mousePressed()) {
+    estado.iniciarTrazo();  
+  }  
 }
 
 void mouseDragged() {
-  estado.actualizarTrazo();
-  intf.mouseDragged();
+  if (!intf.mouseDragged()) {
+    estado.actualizarTrazo();  
+  }  
 }
 
 void mouseReleased() {
-  estado.terminarTrazo();
-  intf.mouseReleased();
+  if (!intf.mouseReleased()) {
+    estado.terminarTrazo();
+  }
 }
 
 void keyPressed() {

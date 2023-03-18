@@ -57,6 +57,29 @@ class PincelAndiamo extends Pincel  {
     return new PincelAndiamo(indice, nombre, teclas);
   }  
 
+  void pintar(Toque[] toques, color tinta, float escala) {
+    color tintaNoAlpha = color(red(tinta), green(tinta), blue(tinta), 255);
+    
+    if (quadCount.size() < toques.length) {
+      for (int i = quadCount.size(); i < toques.length; i++) {
+        addPointToRibbon(toques[i].x, toques[i].y, tintaNoAlpha, escala, toques[i].primero);
+        quadCount.add(quads.size());
+      }
+    }
+    
+    if (0 < quadCount.size()) {
+      float alphaScale = alpha(tinta) / 255;
+      beginShape(QUADS);
+      noStroke();
+      fill(tinta);
+      for (int i = 0; i < quadCount.get(toques.length - 1); i++) {
+        StrokeQuad quad = quads.get(i);
+        quad.display(alphaScale);
+      }
+      endShape(); 
+    }
+  }
+
   void initRibbons() {
     ribbonDetail = RIBBON_DETAIL;
     nVertPerStretch = 0;
@@ -218,27 +241,6 @@ class PincelAndiamo extends Pincel  {
   void addQuad(StrokeQuad quad) {
     quads.add(quad);
   }   
-    
-  void pintar(Toque[] toques, color tinta, float escala) {    
-    if (quadCount.size() < toques.length) {
-      for (int i = quadCount.size(); i < toques.length; i++) {
-        addPointToRibbon(toques[i].x, toques[i].y, tinta, escala, toques[i].primero);
-        quadCount.add(quads.size());
-      }
-    }
-    
-    if (0 < quadCount.size()) {
-      float alphaScale = alpha(tinta) / 255;
-      beginShape(QUADS);
-      noStroke();
-      fill(tinta);
-      for (int i = 0; i < quadCount.get(toques.length - 1); i++) {
-        StrokeQuad quad = quads.get(i);
-        quad.display(alphaScale);
-      }
-      endShape(); 
-    }
-  }
 }
 
 class StrokeQuad {  

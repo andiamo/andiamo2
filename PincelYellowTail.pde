@@ -36,8 +36,8 @@ class PincelYellowTail extends Pincel {
 
   boolean closed;
 
-  PincelYellowTail(int indice, String nombre, char[] teclas) {
-    super(indice, nombre, teclas);
+  PincelYellowTail(int indice, char[] teclas) {
+    super(indice, teclas);
     animarOpacidad = false;
     w = width;
     h = height;
@@ -62,7 +62,7 @@ class PincelYellowTail extends Pincel {
   }
 
   Pincel nuevoPincel() {
-    return new PincelYellowTail(indice, nombre, teclas);
+    return new PincelYellowTail(indice, teclas);
   }
 
   void pintar(Toque[] toques, color tinta, float escala) {    

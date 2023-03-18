@@ -228,11 +228,11 @@ class Estado {
   }
   
   void crearTintaPincelSeleccionada(color c) {
-    tintaPincelSeleccionada = new Tinta(-1, "user-gen", new char[]{}, c); 
+    tintaPincelSeleccionada = new Tinta(c); 
   }
   
   void crearTintaFondoSeleccionada(color c) {
-    tintaFondoSeleccionada = new Tinta(-1, "user-gen", new char[]{}, c);
+    tintaFondoSeleccionada = new Tinta(c);
     lienzo.cambiarColor(tintaFondoSeleccionada);    
   }
   

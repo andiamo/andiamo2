@@ -3,15 +3,15 @@
 
 void cargarPinceles() {
   pinceles = new ArrayList<Pincel>();  
-  pinceles.add(new PincelAndiamo(0, "Andiamo", new char[]{'Q', 'q'}));
-  pinceles.add(new PincelLinea(1, "Linea", new char[]{'W', 'w'}));
-  pinceles.add(new PincelCinta(2, "Cinta", new char[]{'E', 'e'}));
-  pinceles.add(new PincelChispa(3, "Chispa", new char[]{'R', 'r'}));
-  pinceles.add(new PincelCirculo(4, "Circulo", new char[]{'T', 't'}));
-  pinceles.add(new PincelYellowTail(5, "YellowTail", new char[]{'Y', 'y'}));
-  pinceles.add(new PincelCuadrados(6, "Cuadrados", new char[]{'U', 'u'})); 
-  pinceles.add(new PincelAbanico(7, "Abanico", new char[]{'I', 'i'}));
-  pinceles.add(new PincelRectangulos(8, "Rectangulos", new char[]{'O', 'o'}));
+  pinceles.add(new PincelAndiamo(0, new char[]{'Q', 'q'}));
+  pinceles.add(new PincelLinea(1, new char[]{'W', 'w'}));
+  pinceles.add(new PincelCinta(2, new char[]{'E', 'e'}));
+  pinceles.add(new PincelChispa(3, new char[]{'R', 'r'}));
+  pinceles.add(new PincelCirculo(4, new char[]{'T', 't'}));
+  pinceles.add(new PincelYellowTail(5, new char[]{'Y', 'y'}));
+  pinceles.add(new PincelCuadrados(6, new char[]{'U', 'u'})); 
+  pinceles.add(new PincelAbanico(7, new char[]{'I', 'i'}));
+  pinceles.add(new PincelRectangulos(8, new char[]{'O', 'o'}));
 }
 
 void agregarPincelesAlInterface(float left) {
@@ -48,9 +48,8 @@ abstract class Pincel {
   int indice;
   boolean animarOpacidad;
   
-  Pincel(int indice, String nombre, char[] teclas) {
+  Pincel(int indice, char[] teclas) {
     this.indice = indice;
-    this.nombre = nombre;
     this.teclas = teclas;
     this.animarOpacidad = true;
   }
@@ -61,12 +60,12 @@ abstract class Pincel {
 }
   
 class PincelLinea extends Pincel  {
-  PincelLinea(int indice, String nombre, char[] teclas) {
-    super(indice, nombre, teclas);
+  PincelLinea(int indice, char[] teclas) {
+    super(indice, teclas);
   }
   
   Pincel nuevoPincel() {
-    return new PincelLinea(indice, nombre, teclas);
+    return new PincelLinea(indice, teclas);
   }
   
   void pintar(Toque[] toques, color tinta, float escala) {
@@ -83,12 +82,12 @@ class PincelLinea extends Pincel  {
 }
 
 class PincelCinta extends Pincel  {
-  PincelCinta(int indice, String nombre, char[] teclas) {
-    super(indice, nombre, teclas);
+  PincelCinta(int indice, char[] teclas) {
+    super(indice, teclas);
   }
   
   Pincel nuevoPincel() {
-    return new PincelCinta(indice, nombre, teclas);
+    return new PincelCinta(indice, teclas);
   }  
   
   void pintar(Toque[] toques, color tinta, float escala) {
@@ -122,12 +121,12 @@ class PincelCinta extends Pincel  {
 }
 
 class PincelChispa extends Pincel  {
-  PincelChispa(int indice, String nombre, char[] teclas) {
-    super(indice, nombre, teclas);
+  PincelChispa(int indice, char[] teclas) {
+    super(indice, teclas);
   }
   
   Pincel nuevoPincel() {
-    return new PincelChispa(indice, nombre, teclas);
+    return new PincelChispa(indice, teclas);
   }    
   
   void pintar(Toque[] toques, color tinta, float escala) {
@@ -153,13 +152,13 @@ class PincelChispa extends Pincel  {
 class PincelCirculo extends Pincel  {
   float offset;
   
-  PincelCirculo(int indice, String nombre, char[] teclas) {
-    super(indice, nombre, teclas);
+  PincelCirculo(int indice, char[] teclas) {
+    super(indice, teclas);
     offset = random(10);
   }
   
   Pincel nuevoPincel() {
-    return new PincelCirculo(indice, nombre, teclas);
+    return new PincelCirculo(indice, teclas);
   }    
   
   void pintar(Toque[] toques, color tinta, float escala) {
@@ -176,13 +175,13 @@ class PincelCirculo extends Pincel  {
 class PincelCuadrados extends Pincel  {
   float offset;
   
-  PincelCuadrados(int indice, String nombre, char[] teclas) {
-    super(indice, nombre, teclas);
+  PincelCuadrados(int indice,  char[] teclas) {
+    super(indice, teclas);
     offset = random(10);
   }
   
   Pincel nuevoPincel() {
-    return new PincelCuadrados(indice, nombre, teclas);
+    return new PincelCuadrados(indice, teclas);
   }    
   
   void pintar(Toque[] toques, color tinta, float escala) {
@@ -198,12 +197,12 @@ class PincelCuadrados extends Pincel  {
 }
 
 class PincelAbanico extends Pincel  {  
-  PincelAbanico(int indice, String nombre, char[] teclas) {
-    super(indice, nombre, teclas);
+  PincelAbanico(int indice, char[] teclas) {
+    super(indice, teclas);
   }
   
   Pincel nuevoPincel() {
-    return new PincelAbanico(indice, nombre, teclas);
+    return new PincelAbanico(indice, teclas);
   }    
   
   void pintar(Toque[] toques, color tinta, float escala) {
@@ -225,12 +224,12 @@ class PincelAbanico extends Pincel  {
 }
 
 class PincelRectangulos extends Pincel  {
-  PincelRectangulos(int indice, String nombre, char[] teclas) {
-    super(indice, nombre, teclas);
+  PincelRectangulos(int indice, char[] teclas) {
+    super(indice, teclas);
   }
   
   Pincel nuevoPincel() {
-    return new PincelRectangulos(indice, nombre, teclas);
+    return new PincelRectangulos(indice, teclas);
   }
   
   void pintar(Toque[] toques, color tinta, float escala) {

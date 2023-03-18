@@ -46,15 +46,15 @@ class PincelAndiamo extends Pincel  {
   ArrayList<StrokeQuad> quads;
   ArrayList<Integer> quadCount;
   
-  PincelAndiamo(int indice, String nombre, char[] teclas) {
-    super(indice, nombre, teclas);
+  PincelAndiamo(int indice, char[] teclas) {
+    super(indice, teclas);
     initRibbons();
     quads = new ArrayList<StrokeQuad>();
     quadCount = new ArrayList<Integer>();
   }
   
   Pincel nuevoPincel() {    
-    return new PincelAndiamo(indice, nombre, teclas);
+    return new PincelAndiamo(indice, teclas);
   }  
 
   void pintar(Toque[] toques, color tinta, float escala) {

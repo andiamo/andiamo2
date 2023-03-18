@@ -92,37 +92,13 @@ class Estado {
         ToggleButton button = (ToggleButton)intf.getWidget("delAll");
         button.toggled = borrarTodosLosTrazos;
       } else if (keyCode == UP) {
-        CapaDibujo capa = capas.get(capaSeleccionada);
-        capa.incrementarOpacidad(0.1);
-        if (!capa.oculta()) {
-          ToggleButton button = (ToggleButton)intf.getWidget("showL" + (capaSeleccionada + 1));
-          button.toggled = true;
-          button = (ToggleButton)intf.getWidget("showAll");
-          button.toggled = numeroCapasOcultas() == 0;
-        }
+        incrementarOpacidad();
       } else if (keyCode == DOWN) {
-        CapaDibujo capa = capas.get(capaSeleccionada);
-        capa.disminuirOpacidad(0.1);
-        if (capa.oculta()) {
-          ToggleButton button = (ToggleButton)intf.getWidget("showL" + (capaSeleccionada + 1));
-          button.toggled = false;
-          button = (ToggleButton)intf.getWidget("showAll");
-          button.toggled = numeroCapasOcultas() == 0;
-        }       
+        disminuirOpacidad();       
       }        
     } else {
       if (key == DELETE || key == BACKSPACE) {
-        if (!registrandoTrazo) {
-          if (borrarTodosLosTrazos) {           
-            if (todasCapasSeleccionadas) {
-              for (CapaDibujo capa: capas) capa.borrarTrazos();
-            } else {
-              capas.get(capaSeleccionada).borrarTrazos();
-            }
-          } else {
-            capas.get(capaSeleccionada).borrarUltimoTrazo();
-          }          
-        }
+        borrarTrazos();
       } else if (keyCode == ENTER || keyCode == RETURN) {
         invertirMostrarUI();
         ToggleButton button = (ToggleButton)intf.getWidget("toggleUI");
@@ -218,6 +194,58 @@ class Estado {
       }
     }
     return num;
+  }
+  
+  void incrementarOpacidad() {
+    if (todasCapasSeleccionadas) {
+      for (int i = 0; i < capas.size(); i++) incrementarOpacidad(i);  
+    } else {
+      incrementarOpacidad(capaSeleccionada);     
+    }
+    ToggleButton button = (ToggleButton)intf.getWidget("showAll");
+    button.toggled = numeroCapasOcultas() == 0;
+  }
+  
+  void incrementarOpacidad(int i) {
+    CapaDibujo capa = capas.get(i);
+    capa.incrementarOpacidad(0.1);
+    if (!capa.oculta()) {
+      ToggleButton button = (ToggleButton)intf.getWidget("showL" + (i + 1));
+      button.toggled = true;        
+    }
+  }
+  
+  void disminuirOpacidad() {
+    if (todasCapasSeleccionadas) {
+      for (int i = 0; i < capas.size(); i++) disminuirOpacidad(i);
+    } else {
+      disminuirOpacidad(capaSeleccionada);
+    }    
+    ToggleButton button = (ToggleButton)intf.getWidget("showAll");
+    button.toggled = numeroCapasOcultas() == 0;
+  }
+  
+  void disminuirOpacidad(int i) {
+    CapaDibujo capa = capas.get(i);
+    capa.disminuirOpacidad(0.1);
+    if (capa.oculta()) {
+      ToggleButton button = (ToggleButton)intf.getWidget("showL" + (i + 1));
+      button.toggled = false;
+    }
+  }
+  
+  void borrarTrazos() {
+    if (!registrandoTrazo) {
+      if (borrarTodosLosTrazos) {           
+        if (todasCapasSeleccionadas) {
+          for (CapaDibujo capa: capas) capa.borrarTrazos();
+        } else {
+          capas.get(capaSeleccionada).borrarTrazos();
+        }
+      } else {
+        capas.get(capaSeleccionada).borrarUltimoTrazo();
+      }          
+    }
   }
   
   void seleccionarPincel(int pincel) {

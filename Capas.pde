@@ -88,8 +88,12 @@ class CapaDibujo {
   }
   
   void borrarUltimoTrazo() {
-    if (0 < trazos.size()) {
-      trazos.get(trazos.size() - 1).remover();
+    for (int i = trazos.size() - 1; i >= 0; i--) {
+      Trazo tr = trazos.get(i);
+      if (!tr.removiendo) {
+        tr.remover();
+        break;
+      }
     }
   }
   

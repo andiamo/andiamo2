@@ -1,6 +1,6 @@
 void crearCapas() {
   capas = new ArrayList<CapaDibujo>();
-  for (int i = 0; i < MAX_CAPAS; i++) {
+  for (int i = 0; i < 9; i++) {
     capas.add(new CapaDibujo(i + 1));
   }
 }
@@ -81,6 +81,14 @@ class CapaDibujo {
     opacidad.establecerObjetivo(0);
   }  
   
+  void incrementarOpacidad(float d) {
+    opacidad.establecerObjetivo(constrain(opacidad.objetivo + d, 0, 1));
+  }
+
+  void disminuirOpacidad(float d) {
+    opacidad.establecerObjetivo(constrain(opacidad.objetivo - d, 0, 1));
+  }
+  
   void borrarTrazos() {
     for (Trazo trazo: trazos) {
       trazo.remover();
@@ -98,10 +106,10 @@ class CapaDibujo {
   }
   
   boolean visible() {
-    return 0 < opacidad.valor;
+    return 0.01 <= opacidad.valor;
   }
   
-  boolean ocultando() {
-    return opacidad.objetivo == 0 && (opacidad.interpolando || opacidad.valor < 0.01);
+  boolean oculta() {
+    return opacidad.objetivo < 0.01 && (opacidad.interpolando || opacidad.valor < 0.01);
   }
 }

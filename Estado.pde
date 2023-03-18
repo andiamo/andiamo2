@@ -91,7 +91,25 @@ class Estado {
         invertirBorrarTodos();
         ToggleButton button = (ToggleButton)intf.getWidget("delAll");
         button.toggled = borrarTodosLosTrazos;
-      }
+      } else if (keyCode == UP) {
+        CapaDibujo capa = capas.get(capaSeleccionada);
+        capa.incrementarOpacidad(0.1);
+        if (!capa.oculta()) {
+          ToggleButton button = (ToggleButton)intf.getWidget("showL" + (capaSeleccionada + 1));
+          button.toggled = true;
+          button = (ToggleButton)intf.getWidget("showAll");
+          button.toggled = numeroCapasOcultas() == 0;
+        }
+      } else if (keyCode == DOWN) {
+        CapaDibujo capa = capas.get(capaSeleccionada);
+        capa.disminuirOpacidad(0.1);
+        if (capa.oculta()) {
+          ToggleButton button = (ToggleButton)intf.getWidget("showL" + (capaSeleccionada + 1));
+          button.toggled = false;
+          button = (ToggleButton)intf.getWidget("showAll");
+          button.toggled = numeroCapasOcultas() == 0;
+        }       
+      }        
     } else {
       if (key == DELETE || key == BACKSPACE) {
         if (!registrandoTrazo) {
@@ -185,17 +203,17 @@ class Estado {
   void mostrarCapa(int capa) {
     capas.get(capa).mostrar();
     ToggleButton button = (ToggleButton)intf.getWidget("showAll");
-    button.toggled = numeroCapasOcultas() == 0;    
+    button.toggled = numeroCapasOcultas() == 0;
   }
   
   boolean capaEstaOcultando(int capa) {
-    return capas.get(capa).ocultando();
+    return capas.get(capa).oculta();
   }
   
   int numeroCapasOcultas() {
     int num = 0;
     for (CapaDibujo capa: capas) {
-      if (capa.ocultando()) {
+      if (capa.oculta()) {
         num += 1;
       }
     }

@@ -62,7 +62,7 @@ void createUI() {
   ((ValueSlider)w).setValue(1);
   intf.addWidget(w, intf.getWidget("container"));
   
-  left += 40;
+  left += 45;
 
   intf.addWidget(new Label(intf, left - 20, 5, 20, 20, "cp"), intf.getWidget("container"));    
   w = new ColorSelector(intf, left, 5, 100, 20, "brushColor", "setColor");
@@ -75,7 +75,7 @@ void createUI() {
   ((ColorSelector)w).setColor(255, 255, 255);
   intf.addWidget(w, intf.getWidget("container"));
   
-  left += 130;
+  left += 125;
   
   intf.addWidget(new Label(intf, left - 15, 2, 15, 20, "o"), intf.getWidget("container"));
   w = new ValueSlider(intf, left, 10, 60, 10, "brushOpacity", "setOpacity");

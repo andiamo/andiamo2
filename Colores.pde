@@ -2,11 +2,11 @@ void cargarColores() {
   tintasFondo = new ArrayList<Tinta>();
   tintasPincel = new ArrayList<Tinta>();
   
-  tintasFondo.add(new Tinta(0, new char[]{'Z', 'z'}, #FFFFFF));
-  tintasFondo.add(new Tinta(1, new char[]{'X', 'x'}, #000000));  
+  tintasFondo.add(new Tinta(0, new char[]{'Z', 'z'}, #000000));
+  tintasFondo.add(new Tinta(1, new char[]{'X', 'x'}, #FFFFFF));  
     
-  tintasPincel.add(new Tinta(0, new char[]{'A', 'a'}, #171717));
-  tintasPincel.add(new Tinta(1, new char[]{'S', 's'}, #F7F7F7));
+  tintasPincel.add(new Tinta(0, new char[]{'A', 'a'}, #F7F7F7));
+  tintasPincel.add(new Tinta(1, new char[]{'S', 's'}, #171717));
   tintasPincel.add(new Tinta(2, new char[]{'D', 'd'}, #EA8879));
   tintasPincel.add(new Tinta(3, new char[]{'F', 'f'}, #A6EA6B));
   tintasPincel.add(new Tinta(4, new char[]{'G', 'g'}, #4EC7EA));

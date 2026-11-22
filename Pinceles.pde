@@ -14,21 +14,90 @@ void cargarPinceles() {
   pinceles.add(new PincelRectangulos(8, new char[]{'O', 'o'}));
 }
 
+final int MAX_PINCELES_SIN_PAGINACION = 9;
+final int PINCELES_POR_PAGINA = 8;
+int paginaPinceles = 0;
+
 void agregarPincelesAlInterface(float left, float top) {
-  float x = left;
   float btnW = 68;
   float gap = 4;
+  boolean usarPaginacion = pinceles.size() > MAX_PINCELES_SIN_PAGINACION;
+  int porPagina = usarPaginacion ? PINCELES_POR_PAGINA : MAX_PINCELES_SIN_PAGINACION;
+
   for (int i = 0; i < pinceles.size(); i++) {
     Pincel p = pinceles.get(i);
+    int slot = i % porPagina;
+    float x = left + slot * (btnW + gap);
     String keyHint = p.teclas.length > 0 ? str(Character.toUpperCase(p.teclas[0])) : "";
     String label = p.nombre;
     SelectButton w = new SelectButton(intf, x, top, btnW, 24, "pincel" + (i + 1), "seleccionarPincel", label);
     w.setKeyHint(keyHint);
-    w.setTooltip("Pincel " + p.nombre + " (" + keyHint + "): " + p.descripcion);
+    w.setTooltip("Pincel " + p.nombre + (keyHint.equals("") ? "" : " (" + keyHint + ")") + ": " + p.descripcion);
     intf.addWidget(w, intf.getWidget("container"));
     w.selected = (i == estado.pincelSeleccionado);
-    x += btnW + gap;
   }
+
+  if (usarPaginacion) {
+    float ctrlX = left + porPagina * (btnW + gap) + 2;
+    ActionButton prevBtn = new ActionButton(intf, ctrlX, top, 20, 24, "pincelPrev", "paginaPincelesAnterior", "<");
+    prevBtn.setTooltip("Página anterior de pinceles");
+    intf.addWidget(prevBtn, intf.getWidget("container"));
+
+    Label pageLbl = new Label(intf, ctrlX + 20, top, 26, 24, "pincelPage", "");
+    intf.addWidget(pageLbl, intf.getWidget("container"));
+
+    ActionButton nextBtn = new ActionButton(intf, ctrlX + 46, top, 20, 24, "pincelNext", "paginaPincelesSiguiente", ">");
+    nextBtn.setTooltip("Página siguiente de pinceles");
+    intf.addWidget(nextBtn, intf.getWidget("container"));
+
+    paginaPinceles = estado.pincelSeleccionado / PINCELES_POR_PAGINA;
+  } else {
+    paginaPinceles = 0;
+  }
+
+  actualizarPaginaPinceles();
+}
+
+int totalPaginasPinceles() {
+  if (pinceles.size() <= MAX_PINCELES_SIN_PAGINACION) return 1;
+  return ceil(float(pinceles.size()) / PINCELES_POR_PAGINA);
+}
+
+void actualizarPaginaPinceles() {
+  boolean usarPaginacion = pinceles.size() > MAX_PINCELES_SIN_PAGINACION;
+  int porPagina = usarPaginacion ? PINCELES_POR_PAGINA : MAX_PINCELES_SIN_PAGINACION;
+  int total = totalPaginasPinceles();
+  paginaPinceles = constrain(paginaPinceles, 0, total - 1);
+
+  for (int i = 0; i < pinceles.size(); i++) {
+    Widget w = intf.getWidget("pincel" + (i + 1));
+    if (w != null) {
+      if (!usarPaginacion || (i / porPagina) == paginaPinceles) {
+        w.show();
+      } else {
+        w.hide();
+      }
+    }
+  }
+
+  if (usarPaginacion) {
+    Label pageLbl = (Label)intf.getWidget("pincelPage");
+    if (pageLbl != null) {
+      pageLbl.text = (paginaPinceles + 1) + "/" + total;
+    }
+  }
+}
+
+void paginaPincelesAnterior(String nombre) {
+  int total = totalPaginasPinceles();
+  paginaPinceles = (paginaPinceles - 1 + total) % total;
+  actualizarPaginaPinceles();
+}
+
+void paginaPincelesSiguiente(String nombre) {
+  int total = totalPaginasPinceles();
+  paginaPinceles = (paginaPinceles + 1) % total;
+  actualizarPaginaPinceles();
 }
 
 void actualizarInterfacePinceles(int sel) {
@@ -37,6 +106,10 @@ void actualizarInterfacePinceles(int sel) {
     if (button != null) {
       button.selected = (sel == i);
     }
+  }
+  if (pinceles.size() > MAX_PINCELES_SIN_PAGINACION && 0 <= sel) {
+    paginaPinceles = sel / PINCELES_POR_PAGINA;
+    actualizarPaginaPinceles();
   }
 }
 

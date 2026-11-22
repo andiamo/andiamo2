@@ -13,7 +13,7 @@ Esta skill guía la creación completa de un pincel en **Andiamo 2** (Processing
 
 Si el usuario todavía no especificó el comportamiento exacto (por ejemplo: *"quiero un pincel tipo burbujas"* o *"un pincel expresivo como tiza"*), hacele **pocas preguntas claras y sin jerga técnica** antes de escribir código (usando `ask_user` si está disponible, o en un mensaje conciso):
 
-1. **Nombre corto y tecla:** ¿Cómo querés que se llame el botón (máx. 8–10 letras, ej. `"Tiza"`, `"Burbujas"`)? Sugerir una tecla libre (`B`, `C`, `J`, `K`, `L`, `P`, `V`) o preguntar si prefiere **reemplazar** uno de los 9 pinceles existentes si la barra ya tiene 9 botones.
+1. **Nombre corto y tecla:** ¿Cómo querés que se llame el botón (máx. 8–10 letras, ej. `"Tiza"`, `"Burbujas"`)? Sugerir una tecla libre (`B`, `C`, `J`, `K`, `L`, `P`, `V`), o dejarlo sin tecla si ya no quedan letras cómodas (la barra pagina automáticamente a partir de 10 pinceles).
 2. **Comportamiento del trazo:**
    * ¿Se dibuja **toda la estela** que recorriste o **solo la punta** en movimiento?
    * ¿El grosor o tamaño reacciona a la **velocidad** de tu mano?
@@ -74,11 +74,8 @@ Verificá cada una de estas reglas al escribir la clase:
    pinceles.add(new PincelMiPincel(indice, new char[]{'K', 'k'}));
    ```
 2. **Chequeo de colisión de teclas:** confirmá que la tecla elegida no esté usada en `Pinceles.pde`, `Colores.pde` (`A S D F G`, `Z X`) ni `Estado.pde` (`H`, `M`, `N`). Teclas recomendadas libres: `B`, `C`, `J`, `K`, `L`, `P`, `V`.
-3. **Chequeo de espacio en la barra de herramientas:**
-   * En `UI.pde` + `Pinceles.pde`, la fila de pinceles empieza en `x = 198` y tiene el divisor de acciones en `x = 846` (caben 9 botones de `68 px` con `4 px` de separación).
-   * Si al agregar un nuevo pincel `pinceles.size()` supera 9:
-     * **Opción A (si el usuario quiere mantener la barra simple):** reemplazar un pincel existente o pedir confirmación para reasignar un botón.
-     * **Opción B (si el usuario quiere conservar todos):** adaptar `agregarPincelesAlInterface()` (por ejemplo reduciendo `btnW` si alcanza, o agregando paginación/selector) para que ningún botón se superponga con `Borrar` (`x = 856`).
+3. **Comportamiento en la barra de herramientas (10+ pinceles):**
+   * En `Pinceles.pde`, `agregarPincelesAlInterface()` muestra los 9 pinceles en una sola fila cuando `pinceles.size() <= 9`, y activa automáticamente paginación de 8 pinceles por página con controles `< 1/2 >` cuando hay 10 o más pinceles (cambiando de página automáticamente al usar un atajo de teclado). No hace falta modificar `UI.pde` al sumar nuevos pinceles.
 
 ---
 

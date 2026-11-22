@@ -33,7 +33,7 @@ Antes de pedirle nada al asistente, imaginá tu pincel respondiendo estas 4 preg
    * ¿Se dibuja y se desvanece suavemente siguiendo tu ritmo original, o sigue moviéndose/flotando por su cuenta después de soltar?
 4. **Nombre y tecla:**
    * Pensá un nombre corto (máx. 8–10 letras, por ejemplo `Tiza`, `Burbujas`, `Pasto`, `Órbita`).
-   * *Nota sobre la barra superior:* actualmente la barra tiene espacio cómodo para **9 botones de pincel** (`Q` a `O`). Si vas a probar un pincel nuevo, podés pedirle a la IA que **reemplace temporalmente uno que no uses** o que **adapte la barra** para agregar un 10.º botón (teclas libres recomendadas: `B`, `C`, `J`, `K`, `L`, `P`, `V`).
+   * Podés elegir una tecla libre (`B`, `C`, `J`, `K`, `L`, `P`, `V`) o dejarlo solo como botón en la barra. Si superás los 9 pinceles, la barra agrega automáticamente flechas `< 1/2 >` para navegar entre páginas de pinceles sin superponerse con otros botones.
 
 ---
 
@@ -47,7 +47,7 @@ Podés iniciar la conversación invocando la skill directamente o describiendo t
 
 ### Ejemplo 2: Pedido más específico
 
-> *"Usá la skill `crear-pincel` para crear un pincel llamado `Burbujas` con la tecla `K`. Al mover el mouse quiero que deje círculos semitransparentes de distintos tamaños que tiemblen suavemente sin parpadear, y que cuando vaya más rápido las burbujas sean más grandes. Adaptá la barra si hace falta para que entre junto a los 9 pinceles actuales."*
+> *"Usá la skill `crear-pincel` para crear un pincel llamado `Burbujas` con la tecla `K`. Al mover el mouse quiero que deje círculos semitransparentes de distintos tamaños que tiemblen suavemente sin parpadear, y que cuando vaya más rápido las burbujas sean más grandes."*
 
 ### ¿Qué va a hacer el asistente?
 

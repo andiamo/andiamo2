@@ -28,8 +28,8 @@ Este proyecto es **Andiamo 2**, una herramienta de dibujo animado en vivo escrit
 5. **Teclas reservadas y límite actual de la barra:**
    * Teclas ocupadas por pinceles: `Q W E R T Y U I O`.
    * Teclas ocupadas por tintas y acciones: `A S D F G`, `Z X`, `1–9`, `0`, `H`, `M`, `N`, `Espacio`, `Tab`, `~`, `` ` ``, `Enter`, `Supr/Backspace`, flechas, `-/+`, `,/.`, `[/]`.
-   * Teclas de letra libres para nuevos pinceles: `B`, `C`, `J`, `K`, `L`, `P`, `V`.
-   * La barra horizontal en `agregarPincelesAlInterface()` tiene espacio directo para 9 botones (`x = 198..842`) antes del separador en `x = 846`. Si agregás un 10.º pincel sin reemplazar otro, ajustá también el diseño/paginación de la barra en `Pinceles.pde` y `UI.pde`.
+   * Teclas de letra libres para nuevos pinceles: `B`, `C`, `J`, `K`, `L`, `P`, `V` (o se puede omitir la tecla si se agregan muchos pinceles).
+   * La barra horizontal en `agregarPincelesAlInterface()` muestra hasta 9 botones directamente (`x = 198..842`). A partir de 10 pinceles (`pinceles.size() > 9`), activa automáticamente **paginación de 8 pinceles por página** con botones `<` / `>` (`1/2`, etc.) sin desbordar la barra.
 
 ## Verificación de compilación (macOS)
 

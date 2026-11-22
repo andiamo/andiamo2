@@ -73,9 +73,9 @@ Este documento detalla todos los cambios realizados sobre la base original de **
 
 * **Nombres y descripciones en `Pincel`:**
   * Se agregaron los campos `nombre` y `descripcion` en la clase base `Pincel` y se inicializaron en los 9 pinceles (`Andiamo`, `Línea`, `Cinta`, `Chispa`, `Círculo`, `YellowTail`, `Cuadros`, `Abanico`, `Rects`).
-* **Soporte dinámico de todos los pinceles en la interfaz:**
-  * *Problema anterior:* `agregarPincelesAlInterface`, `actualizarInterfacePinceles` y `seleccionarPincel` tenían el límite fijo `1..8`, dejando fuera al 9.º pincel (`PincelRectangulos`, tecla `O`).
-  * *Cambio:* ahora iteran sobre `pinceles.size()`, mostrando los 9 pinceles con su nombre y tooltip con tecla asignada.
+* **Soporte dinámico y paginación automática para 10+ pinceles:**
+  * *Problema anterior:* `agregarPincelesAlInterface`, `actualizarInterfacePinceles` y `seleccionarPincel` tenían el límite fijo `1..8`, dejando fuera al 9.º pincel (`PincelRectangulos`, tecla `O`), y sumar un 10.º pincel habría desbordado la barra sobre el botón `Borrar`.
+  * *Cambio:* ahora iteran sobre `pinceles.size()`. Cuando hay hasta 9 pinceles (`MAX_PINCELES_SIN_PAGINACION = 9`), se muestran todos en una fila; a partir de 10 pinceles, la barra activa automáticamente paginación de 8 pinceles por página (`PINCELES_POR_PAGINA = 8`) con botones `<` / `>` e indicador `1/2`, saltando automáticamente a la página del pincel elegido al usar atajos de teclado.
 * **Robustez geométrica y escala:**
   * `PincelCinta` y `PincelRectangulos`: protección contra división por cero cuando `d2 <= 0.001` (evita vértices `NaN` al hacer clic sin arrastrar).
   * `PincelYellowTail`: `thickness = INIT_TH * escala;` en `pintar()` para que responda al deslizador/atajo de `Escala`.

@@ -176,7 +176,7 @@ abstract class Pincel {
    * Implementá `nuevoPincel()` devolviendo una nueva instancia con los mismos `indice` y `teclas`.
    * Implementá `pintar(Toque[] toques, color tinta, float escala)` respetando `toque.primero` / `toque.ultimo` si el pincel conecta puntos consecutivos.
 2. Registralo en `cargarPinceles()` dentro de `Pinceles.pde` con el siguiente índice entero y un arreglo de teclas libres.
-3. La barra de interfaz (`agregarPincelesAlInterface`) genera los botones dinámicamente a partir de `pinceles.size()`, por lo que aparecerá automáticamente en la UI (verificá el ancho disponible si superás los 9 pinceles).
+3. La barra de interfaz (`agregarPincelesAlInterface`) genera los botones dinámicamente a partir de `pinceles.size()`, mostrando los 9 actuales en una fila y activando automáticamente paginación (`8` pinceles por página con botones `<` / `>`) cuando hay `10` o más pinceles.
 
 ---
 

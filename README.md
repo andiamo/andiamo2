@@ -20,6 +20,7 @@ Andiamo 2 es una reescritura de [Andiamo](../andiamo) diseñada con dos objetivo
 
 * **[Guía de uso](./docs/GUIA_DE_USO.md):** cómo usar la interfaz, mecánica de los bucles (*loops*), unión de secuencias, capas, pinceles, colores y tabla completa de atajos de teclado.
 * **[Arquitectura del código](./docs/ARQUITECTURA.md):** estructura de archivos, ciclo de vida, modelo temporal (`Trazo` / `Toque`), sistema de pinceles (`Pincel`), física de interpolación (`NumeroInterpolado`), sistema de UI (`Interface` / `Widget`) y guía para crear nuevos pinceles o portar a p5.js / Trazos.club.
+* **[Tutorial: Crear pinceles con IA](./docs/TUTORIAL_CREAR_PINCEL.md):** guía paso a paso para artistas y colaboradores sobre cómo diseñar y probar nuevos pinceles usando la skill [`crear-pincel`](./.github/skills/crear-pincel/SKILL.md).
 * **[Registro de cambios](./docs/REGISTRO_DE_CAMBIOS.md):** detalle archivo por archivo de las mejoras de interfaz, correcciones de errores y refactorizaciones realizadas.
 
 ## Resumen de controles de teclado

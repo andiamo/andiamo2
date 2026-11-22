@@ -48,6 +48,8 @@ class PincelAndiamo extends Pincel  {
   
   PincelAndiamo(int indice, char[] teclas) {
     super(indice, teclas);
+    nombre = "Andiamo";
+    descripcion = "Cinta spline suave clásica de Andiamo";
     initRibbons();
     quads = new ArrayList<StrokeQuad>();
     quadCount = new ArrayList<Integer>();

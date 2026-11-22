@@ -38,6 +38,8 @@ class PincelYellowTail extends Pincel {
 
   PincelYellowTail(int indice, char[] teclas) {
     super(indice, teclas);
+    nombre = "YellowTail";
+    descripcion = "Cinta cinética que avanza continuamente (Golan Levin)";
     animarOpacidad = false;
     w = width;
     h = height;
@@ -66,6 +68,7 @@ class PincelYellowTail extends Pincel {
   }
 
   void pintar(Toque[] toques, color tinta, float escala) {    
+    thickness = INIT_TH * escala;
     if (nPoints < toques.length) {
       for (int i = nPoints; i < toques.length; i++) {
         if (distToLast(toques[i].x, toques[i].y) > minMove) {

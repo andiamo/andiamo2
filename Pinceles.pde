@@ -14,34 +14,39 @@ void cargarPinceles() {
   pinceles.add(new PincelRectangulos(8, new char[]{'O', 'o'}));
 }
 
-void agregarPincelesAlInterface(float left) {
-  for (int i = 1; i <= 8; i++) {
-    Widget w = new SelectButton(intf, left + (i-1) * 25, 5, 20, 20, "pincel" + i, "seleccionarPincel", "P" + i);
+void agregarPincelesAlInterface(float left, float top) {
+  float x = left;
+  float btnW = 68;
+  float gap = 4;
+  for (int i = 0; i < pinceles.size(); i++) {
+    Pincel p = pinceles.get(i);
+    String keyHint = p.teclas.length > 0 ? str(Character.toUpperCase(p.teclas[0])) : "";
+    String label = p.nombre;
+    SelectButton w = new SelectButton(intf, x, top, btnW, 24, "pincel" + (i + 1), "seleccionarPincel", label);
+    w.setKeyHint(keyHint);
+    w.setTooltip("Pincel " + p.nombre + " (" + keyHint + "): " + p.descripcion);
     intf.addWidget(w, intf.getWidget("container"));
-    ((SelectButton)w).selected = i == 1;
-  }  
+    w.selected = (i == estado.pincelSeleccionado);
+    x += btnW + gap;
+  }
 }
 
 void actualizarInterfacePinceles(int sel) {
-  for (int i = 1; i <= 8; i++) {
-    SelectButton button = (SelectButton)intf.getWidget("pincel" + i);
-    button.selected = sel == i - 1;
+  for (int i = 0; i < pinceles.size(); i++) {
+    SelectButton button = (SelectButton)intf.getWidget("pincel" + (i + 1));
+    if (button != null) {
+      button.selected = (sel == i);
+    }
   }
 }
 
 void seleccionarPincel(String nombre) {
-  for (int i = 1; i <= 8; i++) {
-    if (nombre.equals("pincel" + i)) {
-      int sel = i - 1;
-      estado.seleccionarPincel(sel);
-      for (int j = 1; j <= 8; j++) {
-        SelectButton w = (SelectButton)intf.getWidget("pincel" + j);
-        if (j - 1 != sel) {
-          w.selected = false;
-        }    
-      }
-    }    
-  }  
+  for (int i = 0; i < pinceles.size(); i++) {
+    if (nombre.equals("pincel" + (i + 1))) {
+      estado.seleccionarPincel(i);
+      return;
+    }
+  }
 }
 
 boolean distintos(Toque ptoque, Toque toque) {
@@ -50,7 +55,8 @@ boolean distintos(Toque ptoque, Toque toque) {
 }
 
 abstract class Pincel {
-  String nombre;
+  String nombre = "";
+  String descripcion = "";
   char[] teclas;
   int indice;
   boolean animarOpacidad;
@@ -69,6 +75,8 @@ abstract class Pincel {
 class PincelLinea extends Pincel  {
   PincelLinea(int indice, char[] teclas) {
     super(indice, teclas);
+    nombre = "Línea";
+    descripcion = "Trazo continuo de línea simple";
   }
   
   Pincel nuevoPincel() {
@@ -91,6 +99,8 @@ class PincelLinea extends Pincel  {
 class PincelCinta extends Pincel  {
   PincelCinta(int indice, char[] teclas) {
     super(indice, teclas);
+    nombre = "Cinta";
+    descripcion = "Cinta de grosor dinámico según velocidad";
   }
   
   Pincel nuevoPincel() {
@@ -113,7 +123,7 @@ class PincelCinta extends Pincel  {
         float d2 = sqrt(sq(dx) + sq(dy));
         float nx = 0;
         float ny = 0;        
-        if (!toque.ultimo) {
+        if (!toque.ultimo && 0.001 < d2) {
           nx = dy / d2;
           ny = -dx / d2;          
         }
@@ -130,6 +140,8 @@ class PincelCinta extends Pincel  {
 class PincelChispa extends Pincel  {
   PincelChispa(int indice, char[] teclas) {
     super(indice, teclas);
+    nombre = "Chispa";
+    descripcion = "Segmento luminoso en la punta del trazo";
   }
   
   Pincel nuevoPincel() {
@@ -161,6 +173,8 @@ class PincelCirculo extends Pincel  {
   
   PincelCirculo(int indice, char[] teclas) {
     super(indice, teclas);
+    nombre = "Círculo";
+    descripcion = "Círculo móvil con tamaño orgánico (noise)";
     offset = random(10);
   }
   
@@ -184,6 +198,8 @@ class PincelCuadrados extends Pincel  {
   
   PincelCuadrados(int indice,  char[] teclas) {
     super(indice, teclas);
+    nombre = "Cuadros";
+    descripcion = "Cuadrado móvil con tamaño orgánico (noise)";
     offset = random(10);
   }
   
@@ -206,6 +222,8 @@ class PincelCuadrados extends Pincel  {
 class PincelAbanico extends Pincel  {  
   PincelAbanico(int indice, char[] teclas) {
     super(indice, teclas);
+    nombre = "Abanico";
+    descripcion = "Líneas radiales desde el inicio del trazo";
   }
   
   Pincel nuevoPincel() {
@@ -233,6 +251,8 @@ class PincelAbanico extends Pincel  {
 class PincelRectangulos extends Pincel  {
   PincelRectangulos(int indice, char[] teclas) {
     super(indice, teclas);
+    nombre = "Rects";
+    descripcion = "Rectángulo extendido del inicio al fin del trazo";
   }
   
   Pincel nuevoPincel() {
@@ -248,18 +268,20 @@ class PincelRectangulos extends Pincel  {
       if (toque.primero) {
         toque0 = toque;        
       }
-      if (toque.ultimo) {
+      if (toque.ultimo && toque0 != null) {
         float dx = toque.x - toque0.x;
         float dy = toque.y - toque0.y;
         float d2 = sqrt(sq(dx) + sq(dy));
-        float nx = dy / d2;
-        float ny = -dx / d2;
-        beginShape(QUAD);
-        vertex(toque0.x + nx * escala, toque0.y + ny * escala);
-        vertex(toque.x + nx * escala, toque.y + ny * escala);
-        vertex(toque.x - nx * escala, toque.y - ny * escala);
-        vertex(toque0.x - nx * escala, toque0.y - ny * escala);        
-        endShape();
+        if (0.001 < d2) {
+          float nx = dy / d2;
+          float ny = -dx / d2;
+          beginShape(QUAD);
+          vertex(toque0.x + nx * escala, toque0.y + ny * escala);
+          vertex(toque.x + nx * escala, toque.y + ny * escala);
+          vertex(toque.x - nx * escala, toque.y - ny * escala);
+          vertex(toque0.x - nx * escala, toque0.y - ny * escala);        
+          endShape();
+        }
       }
     }
   }

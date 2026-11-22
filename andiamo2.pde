@@ -8,7 +8,11 @@ Interface intf;
 
 void settings() {
   if (PANTALLA_COMPLETA) {
-    fullScreen(P2D, PANTALLA_ALTO);
+    if (0 < PANTALLA_INDICE) {
+      fullScreen(P2D, PANTALLA_INDICE);
+    } else {
+      fullScreen(P2D);
+    }
   } else {
     size(PANTALLA_ANCHO, PANTALLA_ALTO, P2D);
   }
@@ -29,6 +33,10 @@ void draw() {
   lienzo.pintar();
   pintarCapas();
   intf.update();
+}
+
+void mouseMoved() {
+  intf.mouseMoved();
 }
 
 void mousePressed() {

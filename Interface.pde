@@ -2,10 +2,12 @@ class Interface {
   PApplet sketch;
   float scaleFactor;
   Widget focused;
+  Widget activeWidget;
   ArrayList<Widget> drawn;
   HashMap<String, PFont> fonts;
   HashMap<String, Widget> widgets;
   Widget root;
+  String currentTooltip = "";
     
   Interface(PApplet sketch) {
     this(sketch, 1);
@@ -16,6 +18,7 @@ class Interface {
     
     scaleFactor = scale;
     focused = null;
+    activeWidget = null;
     drawn = new ArrayList<Widget>(); 
     fonts = new HashMap<String, PFont>();
     widgets = new HashMap<String, Widget>();
@@ -75,10 +78,20 @@ class Interface {
     }
   }
 
+  void setTooltip(String text) {
+    currentTooltip = text != null ? text : "";
+  }
+
   void update() {
     root.updateChildren();
     drawn.clear();
     root.drawChildren();
+    drawOverlayIndicators();
+  }
+
+  void drawOverlayIndicators() {
+    if (!estado.mostrarUI) return;
+    drawStatusAndTooltip();
   }
 
   void addDrawn(Widget w) {
@@ -88,38 +101,42 @@ class Interface {
   boolean mousePressed() {
     setFocused(sketch.mouseX, sketch.mouseY);
     if (focused != null) {
-      focused.setRelMousePos();
-      focused.press();
+      activeWidget = focused;
+      activeWidget.setRelMousePos();
+      activeWidget.press();
       return true;
     }
     return false;
   }
 
   boolean mouseMoved() {
+    currentTooltip = "";
     setFocused(sketch.mouseX, sketch.mouseY);
     if (focused != null) {
       focused.setRelMousePos();
       focused.hover();
+      if (focused.tooltip != null && !focused.tooltip.equals("")) {
+        currentTooltip = focused.tooltip;
+      }
       return true;
     }
     return false;
   }
 
   boolean mouseDragged() {
-    setFocused(sketch.mouseX, sketch.mouseY);
-    if (focused != null) {
-      focused.setRelMousePos();
-      focused.drag();
+    if (activeWidget != null) {
+      activeWidget.setRelMousePos();
+      activeWidget.drag();
       return true;
     }
     return false;
   }
 
   boolean mouseReleased() {
-    setFocused(sketch.mouseX, sketch.mouseY);
-    if (focused != null) {
-      focused.setRelMousePos();
-      focused.release();
+    if (activeWidget != null) {
+      activeWidget.setRelMousePos();
+      activeWidget.release();
+      activeWidget = null;
       return true;
     }
     return false;

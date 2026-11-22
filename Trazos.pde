@@ -10,8 +10,11 @@ Toque crearToque(boolean primero) {
 void cerrarTrazo(CapaDibujo capa, boolean unico) {  
   if (capa.trazos.size() == MAX_TRAZOS) capa.trazos.remove(0);
   if (estado.nuevoTrazo != null) {
-    estado.nuevoTrazo.cerrate(unico);
-    capa.trazos.add(estado.nuevoTrazo);
+    if (0 < estado.nuevoTrazo.toques.size()) {
+      estado.nuevoTrazo.cerrate(unico);
+      capa.trazos.add(estado.nuevoTrazo);
+    }
+    estado.nuevoTrazo = null;
     estado.registrandoTrazo = false;    
   }
 }
@@ -27,6 +30,7 @@ class Trazo {
   int tiempoComienzo;
   int tiempoBorrado;
   int tiempoFinal;
+  int tiempoInicioRemocion;
   boolean repetir;
   boolean cerrado;
   boolean removiendo;
@@ -44,6 +48,7 @@ class Trazo {
     toques = new ArrayList<Toque>();
     
     tiempoComienzo = t;
+    tiempoInicioRemocion = -1;
     atoques = new Toque[0];
     repetir = rep;
     cerrado = false;
@@ -67,28 +72,45 @@ class Trazo {
     
     int indice = toques.size() - 1;
     float factorBorrado = 1;
-    if (cerrado && (repetir || removiendo)) {
-      
-      int t = (millis() - tiempoComienzo) % (tiempoFinal - tiempoComienzo + 1);
-      int indiceCorriente = buscarIndice(t);      
-      if (repetir) {
-        // Transformar tiempo absoluto (millis) en tiempo relativo al trazo:        
-        indice = indiceCorriente;
+    int duracionCiclo = max(1, tiempoFinal - tiempoComienzo + 1);
+
+    if (cerrado && repetir) {
+      int t = (millis() - tiempoComienzo) % duracionCiclo;
+      indice = buscarIndice(t);
+      if (pincel.animarOpacidad && tiempoBorrado - tiempoComienzo <= t && 0 < duracionBorrado) {
+        factorBorrado = 1 - float(t - tiempoBorrado + tiempoComienzo) / duracionBorrado;
       }
-      
-      if (removiendo || pincel.animarOpacidad) {
-        if (tiempoBorrado - tiempoComienzo <= t) {
-          factorBorrado = 1 - float(t - tiempoBorrado + tiempoComienzo) / duracionBorrado;        
+    }
+
+    if (removiendo) {
+      if (0 <= tiempoInicioRemocion) {
+        // Borrado manual inmediato: se desvanece suavemente desde el momento en que se solicita.
+        int durFade = max(1, min(duracionBorrado, 800));
+        int transcurrido = millis() - tiempoInicioRemocion;
+        if (durFade <= transcurrido) {
+          removido = true;
+          removiendo = false;
+          return;
         }
+        factorBorrado *= 1 - float(transcurrido) / durFade;
+      } else if (cerrado) {
+        // Modo "1 vez" (auto-borrado tras completar un ciclo).
+        int t = (millis() - tiempoComienzo) % duracionCiclo;
+        int indiceCorriente = buscarIndice(t);
+        if (!repetir) {
+          indice = indiceCorriente;
+        }
+        if (tiempoBorrado - tiempoComienzo <= t && 0 < duracionBorrado) {
+          factorBorrado = 1 - float(t - tiempoBorrado + tiempoComienzo) / duracionBorrado;
+        }
+        if ((duracionBorrado <= 0 && tiempoBorrado - tiempoComienzo <= t) ||
+            indiceCorriente < indicePrevio || factorBorrado < 0.01) {
+          removido = true;
+          removiendo = false;
+          return;
+        }
+        indicePrevio = indiceCorriente;
       }
-      
-      if (removiendo && (indiceCorriente < indicePrevio || factorBorrado < 0.01)) {
-        removido = true;
-        removiendo = false;
-        return;
-      }
-      
-      indicePrevio = indiceCorriente;
     }
 
     List<Toque> list = toques.subList(0, indice + 1);
@@ -100,7 +122,12 @@ class Trazo {
   }
   
   void remover() {
-    removiendo = true;
+    if (!removiendo) {
+      removiendo = true;
+      tiempoInicioRemocion = millis();
+    } else if (tiempoInicioRemocion < 0) {
+      tiempoInicioRemocion = millis();
+    }
   }
   
   void agregarUnToque(Toque toque) {

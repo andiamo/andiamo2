@@ -30,11 +30,12 @@ class LienzoFondo {
     color colorFondo;
     if (cambiando) {
       int t = millis();
-      if (t - tiempoCambio < duracionCambio) {
+      if (0 < duracionCambio && t - tiempoCambio < duracionCambio) {
         float f = float(t - tiempoCambio) / duracionCambio;      
         colorFondo = tintaPrevia.interpolarHacia(tintaActual, f);        
       } else {
         colorFondo = tintaActual.generarColor();
+        cambiando = false;
       }      
     } else {
       colorFondo = tintaActual.generarColor();  

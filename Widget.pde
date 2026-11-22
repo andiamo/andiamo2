@@ -19,6 +19,8 @@ class Widget {
   boolean isVisible;
   String name;
   String callback;
+  String tooltip = "";
+  String keyHint = "";
     
   Widget() { }  
   
@@ -97,6 +99,14 @@ class Widget {
 
   void setCallback(String callback) {
     this.callback = callback;
+  }
+
+  void setTooltip(String tooltip) {
+    this.tooltip = tooltip;
+  }
+
+  void setKeyHint(String keyHint) {
+    this.keyHint = keyHint;
   }
 
   void addChildren(Widget c) {

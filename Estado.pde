@@ -14,6 +14,7 @@ class Estado {
   
   boolean mostrarTextoDeEstado;
   boolean mostrarUI;
+  boolean mostrarAyuda;
   
   NumeroInterpolado tiempoBorradoTrazos;
   NumeroInterpolado tiempoTransicionFondo;  
@@ -21,6 +22,7 @@ class Estado {
   NumeroInterpolado factorEscalaTrazos;
   
   char[] teclasSeleccionUnaCapa = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+  char[] teclasOcultarUnaCapa = {'!', '@', '#', '$', '%', '^', '&', '*', '('};
   char[] teclasSeleccionTodasLasCapas = {'0'};
   
   Estado() {
@@ -37,6 +39,7 @@ class Estado {
     
     mostrarTextoDeEstado = false;
     mostrarUI = false;
+    mostrarAyuda = false;
     
     unirTrazos = false;
     repetirTrazos = true;
@@ -84,55 +87,104 @@ class Estado {
       }
     }
   }
+
+  void cerrarTrazoEnCurso() {
+    if (registrandoTrazo && nuevoTrazo != null) {
+      cerrarTrazo(nuevoTrazo.capa, borrarTrazosAuto);
+    }
+  }
   
   void procesarTeclado() {
+    boolean shiftDown = keyEvent != null && keyEvent.isShiftDown();
     if (key == CODED) {
-      if (keyCode == SHIFT) {
-        invertirBorrarTodos();
-        ToggleButton button = (ToggleButton)intf.getWidget("delAll");
-        button.toggled = borrarTodosLosTrazos;
-      } else if (keyCode == UP) {
-        incrementarOpacidad();
+      if (keyCode == UP) {
+        if (shiftDown) {
+          incrementarOpacidad();
+        } else {
+          ajustarSliderEscala(0.05);
+        }
       } else if (keyCode == DOWN) {
-        disminuirOpacidad();       
-      }        
+        if (shiftDown) {
+          disminuirOpacidad();
+        } else {
+          ajustarSliderEscala(-0.05);
+        }
+      } else if (keyCode == LEFT) {
+        ajustarSliderOpacidad(-0.1);
+      } else if (keyCode == RIGHT) {
+        ajustarSliderOpacidad(0.1);
+      }
     } else {
       if (key == DELETE || key == BACKSPACE) {
-        borrarTrazos();
-      } else if (keyCode == ENTER || keyCode == RETURN) {
+        if (shiftDown) {
+          borrarCapaCompleta();
+        } else {
+          borrarTrazos();
+        }
+      } else if (key == ENTER || key == RETURN || keyCode == ENTER || keyCode == RETURN) {
         invertirMostrarUI();
-        ToggleButton button = (ToggleButton)intf.getWidget("toggleUI");
-        button.toggled = mostrarUI;
+        syncToggle("toggleUI", mostrarUI);
       } else if (key == ' ') {
-        invertirRepetirTrazos();        
-        ToggleButton button = (ToggleButton)intf.getWidget("toggleLoop");
-        button.toggled = repetirTrazos;   
-      } else if (key == TAB) {
+        invertirRepetirTrazos();
+        syncToggle("toggleLoop", repetirTrazos);
+      } else if (key == TAB || key == '`' || key == '~') {
         invertirUnirTrazos();
-        ToggleButton button = (ToggleButton)intf.getWidget("toggleJoin");
-        button.toggled = unirTrazos;      
+        syncToggle("toggleJoin", unirTrazos);
+      } else if (key == 'n' || key == 'N') {
+        invertirBorrarTrazosAuto();
+        syncToggle("toggleAuto", borrarTrazosAuto);
+      } else if (key == 'm' || key == 'M') {
+        invertirBorrarTodos();
+        syncToggle("delAll", borrarTodosLosTrazos);
+      } else if (key == 'h' || key == 'H' || key == '?') {
+        invertirMostrarAyuda();
+        syncToggle("toggleHelp", mostrarAyuda);
+      } else if (key == '[') {
+        disminuirOpacidad();
+      } else if (key == ']') {
+        incrementarOpacidad();
+      } else if (key == '-' || key == '_') {
+        ajustarSliderBorrado(-0.05);
+      } else if (key == '+' || key == '=') {
+        ajustarSliderBorrado(0.05);
+      } else if (key == ',' || key == '<') {
+        ajustarSliderFondo(-0.05);
+      } else if (key == '.' || key == '>') {
+        ajustarSliderFondo(0.05);
+      } else if (shiftDown && '1' <= keyCode && keyCode <= '9') {
+        int sel = keyCode - '1';
+        alternarVisibilidadCapa(sel);
+      } else if (listaContieneTecla(teclasOcultarUnaCapa)) {
+        int sel = indiceDeTecla(teclasOcultarUnaCapa);
+        alternarVisibilidadCapa(sel);
+      } else if ((shiftDown && keyCode == '0') || key == ')') {
+        if (numeroCapasOcultas() == 0) {
+          ocultarTodasLasCapas();
+        } else {
+          mostrarTodasLasCapas();
+        }
+        syncToggle("showAll", numeroCapasOcultas() == 0);
       } else if (listaContieneTecla(teclasSeleccionUnaCapa)) {
         int sel = indiceDeTecla(teclasSeleccionUnaCapa);
         seleccionarCapa(sel);
         for (int i = 1; i <= 9; i++) {
-          SelectButton w = (SelectButton)intf.getWidget("selectL" + i);          
-          w.selected = i - 1 == sel;
+          SelectButton w = (SelectButton)intf.getWidget("selectL" + i);
+          if (w != null) w.selected = (i - 1 == sel);
         }
       } else if (listaContieneTecla(teclasSeleccionTodasLasCapas)) {
         invertirSeleccionarTodasLasCapas();
-        ToggleButton button = (ToggleButton)intf.getWidget("selectAll");
-        button.toggled = todasCapasSeleccionadas;        
+        syncToggle("selectAll", todasCapasSeleccionadas);
       } else {
         for (Pincel p: pinceles) {
           if (listaContieneTecla(p.teclas)) {
-            seleccionarPincel(p.indice);            
+            seleccionarPincel(p.indice);
           }
         }
         for (Tinta t: tintasPincel) {
           if (listaContieneTecla(t.teclas)) {
             tintaPincelSeleccionada = tintasPincel.get(t.indice);
-             ColorSelector csel = (ColorSelector)intf.getWidget("brushColor");
-             csel.setColor(tintaPincelSeleccionada.generarColor());            
+            ColorSelector csel = (ColorSelector)intf.getWidget("brushColor");
+            if (csel != null) csel.setColor(tintaPincelSeleccionada.generarColor());
           }
         }
         for (Tinta t: tintasFondo) {
@@ -140,11 +192,74 @@ class Estado {
             tintaFondoSeleccionada = tintasFondo.get(t.indice);
             lienzo.cambiarColor(t);
             ColorSelector csel = (ColorSelector)intf.getWidget("backColor");
-            csel.setColor(tintaFondoSeleccionada.generarColor());
+            if (csel != null) csel.setColor(tintaFondoSeleccionada.generarColor());
           }
         }
-      }      
-    } 
+      }
+    }
+  }
+
+  void syncToggle(String widgetName, boolean state) {
+    Widget w = intf.getWidget(widgetName);
+    if (w instanceof ToggleButton) {
+      ((ToggleButton)w).toggled = state;
+    }
+  }
+
+  void alternarVisibilidadCapa(int sel) {
+    if (capaEstaOcultando(sel)) {
+      mostrarCapa(sel);
+      syncToggle("showL" + (sel + 1), true);
+    } else {
+      ocultarCapa(sel);
+      syncToggle("showL" + (sel + 1), false);
+    }
+  }
+
+  void ajustarSliderOpacidad(float delta) {
+    float v = constrain(factorOpacidadTrazos.objetivo + delta, 0, 1);
+    establecerFactorOpacidad(v);
+    ValueSlider vsli = (ValueSlider)intf.getWidget("brushOpacity");
+    if (vsli != null) vsli.setValue(v);
+  }
+
+  void ajustarSliderEscala(float delta) {
+    float v = constrain(obtenerValorSliderEscala() + delta, 0.02, 1);
+    establecerFactorEscala(v);
+    ValueSlider vsli = (ValueSlider)intf.getWidget("brushScale");
+    if (vsli != null) vsli.setValue(v);
+  }
+
+  void ajustarSliderBorrado(float delta) {
+    float v = constrain(obtenerValorSliderBorrado() + delta, 0, 1);
+    establecerTiempoBorradoTrazos(v);
+    ValueSlider vsli = (ValueSlider)intf.getWidget("eraseSpeed");
+    if (vsli != null) vsli.setValue(v);
+  }
+
+  void ajustarSliderFondo(float delta) {
+    float v = constrain(obtenerValorSliderFondo() + delta, 0, 1);
+    establecerTiempoTransicionFondo(v);
+    ValueSlider vsli = (ValueSlider)intf.getWidget("backChangeSpeed");
+    if (vsli != null) vsli.setValue(v);
+  }
+
+  float obtenerValorSliderEscala() {
+    float esc = factorEscalaTrazos.objetivo;
+    if (esc <= 1) return map(esc, 0, 1, 0, 0.5);
+    return map(esc, 1, 10, 0.5, 1);
+  }
+
+  float obtenerValorSliderBorrado() {
+    float ms = tiempoBorradoTrazos.objetivo;
+    if (ms <= 2000) return map(ms, 0, 2000, 0, 0.5);
+    return map(ms, 2000, 15000, 0.5, 1);
+  }
+
+  float obtenerValorSliderFondo() {
+    float ms = tiempoTransicionFondo.objetivo;
+    if (ms <= 2000) return map(ms, 0, 2000, 0, 0.5);
+    return map(ms, 2000, 15000, 0.5, 1);
   }
   
   boolean listaContieneTecla(char[] teclas) {
@@ -163,26 +278,30 @@ class Estado {
   }
   
   void seleccionarCapa(int capa) {
+    if (unirTrazos && registrandoTrazo && capa != capaSeleccionada) {
+      cerrarTrazoEnCurso();
+    }
     capaSeleccionada = capa;
     todasCapasSeleccionadas = false;
 
-    ToggleButton button = (ToggleButton)intf.getWidget("selectAll");
-    button.toggled = false;
+    syncToggle("selectAll", false);
+    if (capas.get(capa).oculta()) {
+      mostrarCapa(capa);
+      syncToggle("showL" + (capa + 1), true);
+    }
     
     ValueSlider vsli = (ValueSlider)intf.getWidget("layerOpacity");
-    vsli.setValue(capas.get(capaSeleccionada).opacidad.objetivo);
+    if (vsli != null) vsli.setValue(capas.get(capaSeleccionada).opacidad.objetivo);
   }
   
   void ocultarCapa(int capa) {
     capas.get(capa).ocultar();
-    ToggleButton button = (ToggleButton)intf.getWidget("showAll");
-    button.toggled = false;      
+    syncToggle("showAll", false);      
   }
   
   void mostrarCapa(int capa) {
     capas.get(capa).mostrar();
-    ToggleButton button = (ToggleButton)intf.getWidget("showAll");
-    button.toggled = numeroCapasOcultas() == 0;
+    syncToggle("showAll", numeroCapasOcultas() == 0);
   }
   
   boolean capaEstaOcultando(int capa) {
@@ -205,20 +324,20 @@ class Estado {
     } else {
       incrementarOpacidad(capaSeleccionada);     
     }
-    ToggleButton button = (ToggleButton)intf.getWidget("showAll");
-    button.toggled = numeroCapasOcultas() == 0;
+    syncToggle("showAll", numeroCapasOcultas() == 0);
   }
   
   void incrementarOpacidad(int i) {
     CapaDibujo capa = capas.get(i);
     capa.incrementarOpacidad(0.1);
     if (!capa.oculta()) {
-      ToggleButton button = (ToggleButton)intf.getWidget("showL" + (i + 1));
-      button.toggled = true;        
+      syncToggle("showL" + (i + 1), true);        
     }
     
-    ValueSlider vsli = (ValueSlider)intf.getWidget("layerOpacity");
-    vsli.setValue(capa.opacidad.objetivo);
+    if (i == capaSeleccionada) {
+      ValueSlider vsli = (ValueSlider)intf.getWidget("layerOpacity");
+      if (vsli != null) vsli.setValue(capa.opacidad.objetivo);
+    }
   }
   
   void disminuirOpacidad() {
@@ -227,20 +346,20 @@ class Estado {
     } else {
       disminuirOpacidad(capaSeleccionada);
     }    
-    ToggleButton button = (ToggleButton)intf.getWidget("showAll");
-    button.toggled = numeroCapasOcultas() == 0;
+    syncToggle("showAll", numeroCapasOcultas() == 0);
   }
   
   void disminuirOpacidad(int i) {
     CapaDibujo capa = capas.get(i);
     capa.disminuirOpacidad(0.1);
     if (capa.oculta()) {
-      ToggleButton button = (ToggleButton)intf.getWidget("showL" + (i + 1));
-      button.toggled = false;
+      syncToggle("showL" + (i + 1), false);
     }
     
-    ValueSlider vsli = (ValueSlider)intf.getWidget("layerOpacity");
-    vsli.setValue(capa.opacidad.objetivo);
+    if (i == capaSeleccionada) {
+      ValueSlider vsli = (ValueSlider)intf.getWidget("layerOpacity");
+      if (vsli != null) vsli.setValue(capa.opacidad.objetivo);
+    }
   }
   
   void establecerOpacidadDeCapa(float f) {
@@ -250,37 +369,39 @@ class Estado {
       establecerOpacidadDeCapa(capaSeleccionada, f);
     }
     
-    ToggleButton button = (ToggleButton)intf.getWidget("showAll");
-    button.toggled = numeroCapasOcultas() == 0;
+    syncToggle("showAll", numeroCapasOcultas() == 0);
   }
   
   void establecerOpacidadDeCapa(int i, float f) {
     CapaDibujo capa = capas.get(i);
     capa.establecerOpacidad(f);   
-    if (capa.oculta()) {
-      ToggleButton button = (ToggleButton)intf.getWidget("showL" + (i + 1));
-      button.toggled = false;
-    } else {
-      ToggleButton button = (ToggleButton)intf.getWidget("showL" + (i + 1));
-      button.toggled = true; 
-    }    
+    syncToggle("showL" + (i + 1), !capa.oculta());
   }
   
   void borrarTrazos() {
-    if (!registrandoTrazo) {
-      if (borrarTodosLosTrazos) {           
-        if (todasCapasSeleccionadas) {
-          for (CapaDibujo capa: capas) capa.borrarTrazos();
-        } else {
-          capas.get(capaSeleccionada).borrarTrazos();
-        }
-      } else {
-        capas.get(capaSeleccionada).borrarUltimoTrazo();
-      }          
+    cerrarTrazoEnCurso();
+    if (borrarTodosLosTrazos) {
+      borrarCapaCompleta();
+    } else if (todasCapasSeleccionadas) {
+      for (CapaDibujo capa: capas) capa.borrarUltimoTrazo();
+    } else {
+      capas.get(capaSeleccionada).borrarUltimoTrazo();
+    }
+  }
+
+  void borrarCapaCompleta() {
+    cerrarTrazoEnCurso();
+    if (todasCapasSeleccionadas) {
+      for (CapaDibujo capa: capas) capa.borrarTrazos();
+    } else {
+      capas.get(capaSeleccionada).borrarTrazos();
     }
   }
   
   void seleccionarPincel(int pincel) {
+    if (unirTrazos && registrandoTrazo && pincel != pincelSeleccionado) {
+      cerrarTrazoEnCurso();
+    }
     pincelSeleccionado = pincel;
     actualizarInterfacePinceles(pincel);
   }
@@ -289,8 +410,7 @@ class Estado {
     repetirTrazos = !repetirTrazos;
     if (repetirTrazos) {
       borrarTrazosAuto = false;
-      ToggleButton button = (ToggleButton)intf.getWidget("toggleAuto");
-      button.toggled = false;
+      syncToggle("toggleAuto", false);
     }
   }
   
@@ -298,15 +418,14 @@ class Estado {
     borrarTrazosAuto = !borrarTrazosAuto;
     if (borrarTrazosAuto) {
       repetirTrazos = false;
-      ToggleButton button = (ToggleButton)intf.getWidget("toggleLoop");
-      button.toggled = false;
+      syncToggle("toggleLoop", false);
     }
   }
   
   void invertirUnirTrazos() {
     unirTrazos = !unirTrazos;
     if (!unirTrazos) {
-      cerrarTrazo(capas.get(capaSeleccionada), borrarTrazosAuto);
+      cerrarTrazoEnCurso();
     }
   }  
 
@@ -321,16 +440,14 @@ class Estado {
   void mostrarTodasLasCapas() {
     for (CapaDibujo capa: capas) capa.mostrar();    
     for (int i = 1; i <= 9; i++) {
-      ToggleButton button = (ToggleButton)intf.getWidget("showL" + i);
-      button.toggled = true;
+      syncToggle("showL" + i, true);
     }  
   }
   
   void ocultarTodasLasCapas() {
     for (CapaDibujo capa: capas) capa.ocultar();    
     for (int i = 1; i <= 9; i++) {
-      ToggleButton button = (ToggleButton)intf.getWidget("showL" + i);
-      button.toggled = false;
+      syncToggle("showL" + i, false);
     }
   }
   
@@ -338,8 +455,28 @@ class Estado {
     mostrarUI = !mostrarUI;
     
     Widget container = intf.getWidget("container");
-    if (container.isVisible) container.hide();
-    else container.show();    
+    if (mostrarUI) {
+      container.show();
+    } else {
+      container.hide();
+      mostrarAyuda = false;
+      syncToggle("toggleHelp", false);
+      Widget help = intf.getWidget("helpOverlay");
+      if (help != null) help.hide();
+    }
+  }
+
+  void invertirMostrarAyuda() {
+    mostrarAyuda = !mostrarAyuda;
+    if (mostrarAyuda && !mostrarUI) {
+      invertirMostrarUI();
+      syncToggle("toggleUI", true);
+    }
+    Widget help = intf.getWidget("helpOverlay");
+    if (help != null) {
+      if (mostrarAyuda) help.show();
+      else help.hide();
+    }
   }
   
   void crearTintaPincelSeleccionada(color c) {
@@ -352,23 +489,27 @@ class Estado {
   }
   
   void establecerFactorOpacidad(float f) {
-    factorOpacidadTrazos.establecerObjetivo(f);
+    factorOpacidadTrazos.establecerObjetivo(constrain(f, 0, 1));
   }
 
   void establecerFactorEscala(float f) {
-    if (0.5 < f) f = map(f, 0.5, 1, 1, 10);
+    f = constrain(f, 0, 1);
+    if (f <= 0.5) f = map(f, 0, 0.5, 0, 1);
+    else f = map(f, 0.5, 1, 1, 10);
     factorEscalaTrazos.establecerObjetivo(f);
   }
   
   void establecerTiempoBorradoTrazos(float f) {
+    f = constrain(f, 0, 1);
     if (0.5 < f) f = map(f, 0.5, 1, 2000, 15000);
-    if (f < 0.5) f = map(f, 0, 0.5, 0, 2000);    
+    else f = map(f, 0, 0.5, 0, 2000);    
     tiempoBorradoTrazos.establecerObjetivo(f);
   }
   
   void establecerTiempoTransicionFondo(float f) {
+    f = constrain(f, 0, 1);
     if (0.5 < f) f = map(f, 0.5, 1, 2000, 15000);
-    if (f < 0.5) f = map(f, 0, 0.5, 0, 2000);
+    else f = map(f, 0, 0.5, 0, 2000);
     tiempoTransicionFondo.establecerObjetivo(f);    
   }
 }
